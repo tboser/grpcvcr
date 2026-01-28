@@ -21,10 +21,10 @@ if TYPE_CHECKING:
     from grpcvr.cassette import Cassette
 
 
-class _AsyncFakeUnaryCall(aio.Call):  # type: ignore[misc]
+class _AsyncFakeUnaryCall(aio.UnaryUnaryCall):  # type: ignore[misc]
     """Async fake call for unary response playback.
 
-    Implements the gRPC async Call interface to return pre-recorded responses
+    Implements the gRPC async UnaryUnaryCall interface to return pre-recorded responses
     without making actual network calls.
     """
 
@@ -79,6 +79,9 @@ class _AsyncFakeUnaryCall(aio.Call):  # type: ignore[misc]
 
     def time_remaining(self) -> float | None:
         return None
+
+    async def wait_for_connection(self) -> None:
+        pass
 
 
 class _AsyncFakeStreamingCall(aio.Call):  # type: ignore[misc]
@@ -140,6 +143,9 @@ class _AsyncFakeStreamingCall(aio.Call):  # type: ignore[misc]
 
     def time_remaining(self) -> float | None:
         return None
+
+    async def wait_for_connection(self) -> None:
+        pass
 
 
 class AsyncRecordingUnaryUnaryInterceptor(aio.UnaryUnaryClientInterceptor):  # type: ignore[misc]

@@ -86,9 +86,6 @@ ipython_config.py
 # pipenv
 Pipfile.lock
 
-# UV
-uv.lock
-
 # PEP 582
 __pypackages__/
 
@@ -148,3 +145,5 @@ Thumbs.db
 
 # Project specific
 src/grpcvr/_version.py
+
+.claude/settings.local.json

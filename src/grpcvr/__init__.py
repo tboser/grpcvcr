@@ -23,7 +23,12 @@ Example:
 
 from grpcvr._version import __version__
 from grpcvr.cassette import Cassette, use_cassette
-from grpcvr.channel import RecordingChannel, recorded_channel
+from grpcvr.channel import (
+    AsyncRecordingChannel,
+    RecordingChannel,
+    async_recorded_channel,
+    recorded_channel,
+)
 from grpcvr.errors import (
     CassetteNotFoundError,
     CassetteWriteError,
@@ -45,6 +50,7 @@ from grpcvr.record_modes import RecordMode
 __all__ = [
     "__version__",
     "AllMatcher",
+    "AsyncRecordingChannel",
     "Cassette",
     "CassetteNotFoundError",
     "CassetteWriteError",
@@ -59,6 +65,7 @@ __all__ = [
     "RecordMode",
     "RequestMatcher",
     "SerializationError",
+    "async_recorded_channel",
     "recorded_channel",
     "use_cassette",
 ]

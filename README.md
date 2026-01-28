@@ -1,6 +1,6 @@
 # grpcvr
 
-[![CI](https://github.com/yourusername/grpcvr/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/grpcvr/actions/workflows/ci.yml)
+[![CI](https://github.com/tboser/grpcvr/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/grpcvr/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/grpcvr.svg)](https://badge.fury.io/py/grpcvr)
 [![Python versions](https://img.shields.io/pypi/pyversions/grpcvr.svg)](https://pypi.org/project/grpcvr/)
 

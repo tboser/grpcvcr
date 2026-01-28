@@ -1,0 +1,12 @@
+changelog:
+  exclude:
+    labels:
+      - docs
+      - chore
+  categories:
+    - title: Features
+      labels:
+        - feature
+    - title: Bug Fixes
+      labels:
+        - bug

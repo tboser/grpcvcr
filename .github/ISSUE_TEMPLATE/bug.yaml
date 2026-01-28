@@ -1,0 +1,47 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in grpcvr
+labels: ["bug"]
+
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Initial Checks
+      options:
+        - label: I'm using the [latest version](https://github.com/tboser/grpcvcr/releases/latest) of grpcvr
+          required: true
+        - label: I've searched [existing issues](https://github.com/tboser/grpcvcr/issues) before opening this
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please explain what you're seeing and what you expected.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Minimal Reproducible Example
+      description: >
+        If possible, add a self-contained
+        [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example).
+      placeholder: |
+        from grpcvr import recorded_channel
+
+        with recorded_channel("test.yaml", "localhost:50051") as channel:
+            ...
+      render: Python
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Version Information
+      value: |
+        - Python:
+        - grpcvr:
+        - grpcio:
+    validations:
+      required: true

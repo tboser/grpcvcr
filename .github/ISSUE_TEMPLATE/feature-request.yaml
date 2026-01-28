@@ -1,0 +1,16 @@
+name: Feature Request
+description: Suggest a new feature for grpcvr
+labels: ["feature"]
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please describe the feature you'd like. Include:
+        - Example code showing how it might work
+        - Your use case
+        - Links to similar features in other projects
+    validations:
+      required: true

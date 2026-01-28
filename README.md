@@ -1,10 +1,11 @@
 # grpcvr
 
-[![CI](https://github.com/tboser/grpcvr/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/grpcvr/actions/workflows/ci.yml)
-[![PyPI version](https://badge.fury.io/py/grpcvr.svg)](https://badge.fury.io/py/grpcvr)
+[![CI](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml/badge.svg)](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/tboser/grpcvcr/graph/badge.svg)](https://codecov.io/gh/tboser/grpcvcr)
+[![PyPI version](https://img.shields.io/pypi/v/grpcvr.svg)](https://pypi.org/project/grpcvr/)
 [![Python versions](https://img.shields.io/pypi/pyversions/grpcvr.svg)](https://pypi.org/project/grpcvr/)
 
-**Record and replay gRPC interactions for testing** - like [VCR.py](https://vcrpy.readthedocs.io/) but for gRPC/HTTP2.
+**Record and replay gRPC interactions for testing** - like [VCR.py](https://vcrpy.readthedocs.io/) but for gRPC.
 
 ## Installation
 
@@ -15,7 +16,7 @@ pip install grpcvr
 ## Quick Start
 
 ```python
-from grpcvr import recorded_channel
+from grpcvr import recorded_channel, RecordMode
 
 # Record on first run, replay on subsequent runs
 with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as channel:
@@ -42,6 +43,18 @@ with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as chan
 | `ALL` | Always record, overwrite existing |
 | `ONCE` | Record if cassette missing, then playback |
 
+## Async Support
+
+```python
+from grpcvr import AsyncRecordingChannel, Cassette, RecordMode
+
+cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
+
+async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
+    stub = MyServiceStub(recording.channel)
+    response = await stub.GetUser(GetUserRequest(id=1))
+```
+
 ## pytest Integration
 
 ```python
@@ -59,11 +72,13 @@ def test_get_user(grpcvr_cassette):
 ```
 
 Run in record mode:
+
 ```bash
 pytest --grpcvr-record=new_episodes
 ```
 
 Run in strict playback mode (CI):
+
 ```bash
 pytest --grpcvr-record=none
 ```

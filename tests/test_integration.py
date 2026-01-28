@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from grpcvr import (
+from grpcvcr import (
     Cassette,
     MethodMatcher,
     RecordingChannel,
@@ -14,7 +14,7 @@ from grpcvr import (
     RequestMatcher,
     recorded_channel,
 )
-from grpcvr.errors import RecordingDisabledError
+from grpcvcr.errors import RecordingDisabledError
 
 
 class TestUnaryRecordingPlayback:
@@ -95,7 +95,7 @@ class TestRecordModes:
         pb2_grpc,
     ) -> None:
         """NONE mode raises when cassette doesn't exist."""
-        from grpcvr.errors import CassetteNotFoundError
+        from grpcvcr.errors import CassetteNotFoundError
 
         with pytest.raises(CassetteNotFoundError):
             Cassette(tmp_cassette_path, record_mode=RecordMode.NONE)

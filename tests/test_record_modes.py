@@ -1,6 +1,6 @@
 """Tests for record modes."""
 
-from grpcvr.record_modes import RecordMode
+from grpcvcr.record_modes import RecordMode
 
 
 class TestRecordMode:

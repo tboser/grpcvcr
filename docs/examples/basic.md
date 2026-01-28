@@ -1,59 +1,47 @@
 # Basic Usage
 
-This page covers common usage patterns for grpcvr.
+Common patterns for using grpcvcr in your projects.
 
 ## Recording and Playback
 
-The simplest way to use grpcvr is with the `recorded_channel` context manager:
-
-```python
-from grpcvr import recorded_channel
+```python test="skip"
+from grpcvcr import recorded_channel
 
 # First run: records interactions to cassette
 with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as channel:
     stub = MyServiceStub(channel)
     response = stub.GetUser(GetUserRequest(id=1))
     assert response.name == "Alice"
-
-# Subsequent runs: plays back from cassette (no server needed)
 ```
 
 ## Record Modes
 
-Control recording behavior with `RecordMode`:
+```python test="skip"
+from grpcvcr import RecordMode, recorded_channel
 
-```python
-from grpcvr import recorded_channel, RecordMode
+target = "localhost:50051"
 
 # NONE - Playback only, fail if no match (use in CI)
 with recorded_channel("test.yaml", target, record_mode=RecordMode.NONE) as channel:
     ...
 
 # NEW_EPISODES - Play existing, record new (default)
-with recorded_channel("test.yaml", target, record_mode=RecordMode.NEW_EPISODES) as channel:
+with recorded_channel(
+    "test.yaml", target, record_mode=RecordMode.NEW_EPISODES
+) as channel:
     ...
 
 # ALL - Always record, overwrite existing
 with recorded_channel("test.yaml", target, record_mode=RecordMode.ALL) as channel:
     ...
-
-# ONCE - Record if cassette missing, then playback only
-with recorded_channel("test.yaml", target, record_mode=RecordMode.ONCE) as channel:
-    ...
 ```
 
-## Using the Cassette Directly
+## Manual Channel Management
 
-For more control, use `Cassette` and `RecordingChannel` directly:
+```python test="skip"
+from grpcvcr import Cassette, RecordingChannel
 
-```python
-from grpcvr import Cassette, RecordingChannel, RecordMode
-
-cassette = Cassette(
-    path="tests/cassettes/my_test.yaml",
-    record_mode=RecordMode.NEW_EPISODES,
-)
-
+cassette = Cassette("tests/cassettes/test.yaml")
 channel = RecordingChannel(cassette, "localhost:50051")
 stub = MyServiceStub(channel.channel)
 
@@ -64,45 +52,42 @@ channel.close()  # Saves the cassette
 
 ## pytest Integration
 
-grpcvr includes a pytest plugin for automatic cassette management:
-
-```python
+```python test="skip"
 import pytest
-from grpcvr import RecordingChannel
+
+from grpcvcr import RecordingChannel
+
 
 @pytest.fixture
 def grpc_target():
     return "localhost:50051"
 
+
 def test_get_user(cassette, grpc_target):
     """Cassette is automatically named after the test."""
     channel = RecordingChannel(cassette, grpc_target)
     stub = MyServiceStub(channel.channel)
-
-    response = stub.GetUser(GetUserRequest(id=1))
-    assert response.name == "Alice"
-
-    channel.close()
 ```
 
-Use markers to customize cassette behavior:
+Custom cassette configuration:
 
-```python
-from grpcvr import RecordMode
+```python test="skip"
+from grpcvcr import RecordMode
 
-@pytest.mark.grpcvr("custom_cassette.yaml", record_mode=RecordMode.ALL)
+
+@pytest.mark.grpcvcr("custom_cassette.yaml", record_mode=RecordMode.ALL)
 def test_with_custom_cassette(cassette, grpc_target):
     ...
 ```
 
 ## Async Support
 
-For async gRPC clients, use `AsyncRecordingChannel`:
-
-```python
+```python test="skip"
 import asyncio
-from grpcvr import Cassette, RecordMode
-from grpcvr.channel import AsyncRecordingChannel
+
+from grpcvcr import Cassette
+from grpcvcr.channel import AsyncRecordingChannel
+
 
 async def main():
     cassette = Cassette("test.yaml")
@@ -112,16 +97,19 @@ async def main():
         response = await stub.GetUser(GetUserRequest(id=1))
         print(response.name)
 
+
 asyncio.run(main())
 ```
 
 ## Streaming RPCs
 
-grpcvr supports all gRPC streaming patterns:
-
 ### Server Streaming
 
-```python
+```python test="skip"
+from grpcvcr import recorded_channel
+
+target = "localhost:50051"
+
 with recorded_channel("test.yaml", target) as channel:
     stub = MyServiceStub(channel)
 
@@ -131,10 +119,16 @@ with recorded_channel("test.yaml", target) as channel:
 
 ### Client Streaming
 
-```python
+```python test="skip"
+from grpcvcr import recorded_channel
+
+target = "localhost:50051"
+
+
 def request_generator():
     yield CreateUserRequest(name="Alice", email="alice@example.com")
     yield CreateUserRequest(name="Bob", email="bob@example.com")
+
 
 with recorded_channel("test.yaml", target) as channel:
     stub = MyServiceStub(channel)
@@ -144,10 +138,16 @@ with recorded_channel("test.yaml", target) as channel:
 
 ### Bidirectional Streaming
 
-```python
+```python test="skip"
+from grpcvcr import recorded_channel
+
+target = "localhost:50051"
+
+
 def chat_messages():
     yield ChatMessage(sender="User", content="Hello")
     yield ChatMessage(sender="User", content="How are you?")
+
 
 with recorded_channel("test.yaml", target) as channel:
     stub = MyServiceStub(channel)

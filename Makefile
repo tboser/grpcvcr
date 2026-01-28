@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := all
-sources = src/grpcvr tests
+sources = src/grpcvcr tests
 
 .PHONY: install
 install:
@@ -38,7 +38,7 @@ test-all:
 
 .PHONY: testcov
 testcov:
-	uv run pytest tests/ --ignore=tests/test_examples.py -p no:grpcvr --cov=src/grpcvr --cov-report=term-missing --cov-report=html
+	uv run pytest tests/ --ignore=tests/test_examples.py -p no:grpcvcr --cov=src/grpcvcr --cov-report=term-missing --cov-report=html
 
 .PHONY: proto
 proto:

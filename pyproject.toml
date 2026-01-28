@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "grpcvr"
+name = "grpcvcr"
 description = "Record and replay gRPC interactions for testing"
 readme = "README.md"
 license = "MIT"
@@ -51,7 +51,7 @@ docs = [
 ]
 
 [project.entry-points.pytest11]
-grpcvr = "grpcvr.pytest_plugin"
+grpcvcr = "grpcvcr.pytest_plugin"
 
 [project.urls]
 Homepage = "https://github.com/tboser/grpcvcr"
@@ -63,13 +63,13 @@ Changelog = "https://github.com/tboser/grpcvcr/releases"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/grpcvr/_version.py"
+version-file = "src/grpcvcr/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = ["/src"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/grpcvr"]
+packages = ["src/grpcvcr"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -88,17 +88,17 @@ filterwarnings = [
 norecursedirs = ["tests/generated"]
 
 [tool.coverage.run]
-source = ["src/grpcvr"]
+source = ["src/grpcvcr"]
 branch = true
 parallel = true
 relative_files = true
 omit = [
-    "src/grpcvr/_version.py",
-    "src/grpcvr/pytest_plugin.py",
+    "src/grpcvcr/_version.py",
+    "src/grpcvcr/pytest_plugin.py",
 ]
 
 [tool.coverage.paths]
-source = ["src/grpcvr"]
+source = ["src/grpcvcr"]
 
 [tool.coverage.report]
 show_missing = true
@@ -115,7 +115,7 @@ exclude_lines = [
 [tool.ruff]
 line-length = 120
 target-version = "py311"
-exclude = ["tests/generated", "src/grpcvr/_version.py"]
+exclude = ["tests/generated", "src/grpcvcr/_version.py"]
 
 [tool.ruff.lint]
 select = [
@@ -139,13 +139,13 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["grpcvr"]
+known-first-party = ["grpcvcr"]
 
 
 [tool.pyright]
 pythonVersion = "3.11"
 typeCheckingMode = "basic"
-include = ["src/grpcvr", "tests"]
+include = ["src/grpcvcr", "tests"]
 reportMissingTypeStubs = false
 reportIncompatibleMethodOverride = false
 reportArgumentType = false

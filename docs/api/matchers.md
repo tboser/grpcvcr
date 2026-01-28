@@ -4,10 +4,10 @@ Matchers determine how recorded interactions are matched to incoming requests du
 
 ## Overview
 
-By default, grpcvr matches requests by method name only. You can customize matching behavior using different matchers or combining them.
+By default, grpcvcr matches requests by method name only. You can customize matching behavior using different matchers or combining them.
 
 ```python
-from grpcvr import MethodMatcher, RequestMatcher
+from grpcvcr import MethodMatcher, RequestMatcher
 
 # Match by method name and request body
 matcher = MethodMatcher() & RequestMatcher()
@@ -17,26 +17,26 @@ matcher = MethodMatcher() & RequestMatcher()
 
 | Matcher | Description |
 |---------|-------------|
-| [`MethodMatcher`][grpcvr.MethodMatcher] | Match by RPC method name |
-| [`RequestMatcher`][grpcvr.RequestMatcher] | Match by request body |
-| [`MetadataMatcher`][grpcvr.MetadataMatcher] | Match by request metadata |
-| [`AllMatcher`][grpcvr.AllMatcher] | Combine multiple matchers |
-| [`CustomMatcher`][grpcvr.CustomMatcher] | Custom matching function |
+| [`MethodMatcher`][grpcvcr.MethodMatcher] | Match by RPC method name |
+| [`RequestMatcher`][grpcvcr.RequestMatcher] | Match by request body |
+| [`MetadataMatcher`][grpcvcr.MetadataMatcher] | Match by request metadata |
+| [`AllMatcher`][grpcvcr.AllMatcher] | Combine multiple matchers |
+| [`CustomMatcher`][grpcvcr.CustomMatcher] | Custom matching function |
 
 ## API Reference
 
-::: grpcvr.Matcher
+::: grpcvcr.Matcher
     options:
       members:
         - matches
         - __and__
 
-::: grpcvr.MethodMatcher
+::: grpcvcr.MethodMatcher
 
-::: grpcvr.RequestMatcher
+::: grpcvcr.RequestMatcher
 
-::: grpcvr.MetadataMatcher
+::: grpcvcr.MetadataMatcher
 
-::: grpcvr.AllMatcher
+::: grpcvcr.AllMatcher
 
-::: grpcvr.CustomMatcher
+::: grpcvcr.CustomMatcher

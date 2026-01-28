@@ -1,13 +1,13 @@
-"""grpcvr - Record and replay gRPC interactions for testing.
+"""grpcvcr - Record and replay gRPC interactions for testing.
 
-grpcvr (gRPC Video Recorder) is a library for recording and replaying gRPC
+grpcvcr (gRPC Video Recorder) is a library for recording and replaying gRPC
 interactions, similar to VCR.py for HTTP. It's designed to make testing
 gRPC services easier by allowing you to record real interactions and
 replay them in tests.
 
 Example:
     ```python
-    from grpcvr import recorded_channel, RecordMode
+    from grpcvcr import recorded_channel, RecordMode
 
     # Record interactions to a cassette file
     with recorded_channel("test.yaml", "localhost:50051", record_mode=RecordMode.ALL) as channel:
@@ -21,15 +21,15 @@ Example:
     ```
 """
 
-from grpcvr._version import __version__
-from grpcvr.cassette import Cassette, use_cassette
-from grpcvr.channel import (
+from grpcvcr._version import __version__
+from grpcvcr.cassette import Cassette, use_cassette
+from grpcvcr.channel import (
     AsyncRecordingChannel,
     RecordingChannel,
     async_recorded_channel,
     recorded_channel,
 )
-from grpcvr.errors import (
+from grpcvcr.errors import (
     CassetteNotFoundError,
     CassetteWriteError,
     GrpcvrError,
@@ -37,7 +37,7 @@ from grpcvr.errors import (
     RecordingDisabledError,
     SerializationError,
 )
-from grpcvr.matchers import (
+from grpcvcr.matchers import (
     AllMatcher,
     CustomMatcher,
     Matcher,
@@ -45,7 +45,7 @@ from grpcvr.matchers import (
     MethodMatcher,
     RequestMatcher,
 )
-from grpcvr.record_modes import RecordMode
+from grpcvcr.record_modes import RecordMode
 
 __all__ = [
     "__version__",

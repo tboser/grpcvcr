@@ -1,22 +1,22 @@
-# grpcvr
+# grpcvcr
 
 [![CI](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml/badge.svg)](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/tboser/grpcvcr/graph/badge.svg)](https://codecov.io/gh/tboser/grpcvcr)
-[![PyPI version](https://img.shields.io/pypi/v/grpcvr.svg)](https://pypi.org/project/grpcvr/)
-[![Python versions](https://img.shields.io/pypi/pyversions/grpcvr.svg)](https://pypi.org/project/grpcvr/)
+[![PyPI version](https://img.shields.io/pypi/v/grpcvcr.svg)](https://pypi.org/project/grpcvcr/)
+[![Python versions](https://img.shields.io/pypi/pyversions/grpcvcr.svg)](https://pypi.org/project/grpcvcr/)
 
 **Record and replay gRPC interactions for testing** - like [VCR.py](https://vcrpy.readthedocs.io/) but for gRPC.
 
 ## Installation
 
 ```bash
-pip install grpcvr
+pip install grpcvcr
 ```
 
 ## Quick Start
 
 ```python
-from grpcvr import recorded_channel, RecordMode
+from grpcvcr import recorded_channel, RecordMode
 
 # Record on first run, replay on subsequent runs
 with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as channel:
@@ -46,7 +46,7 @@ with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as chan
 ## Async Support
 
 ```python
-from grpcvr import AsyncRecordingChannel, Cassette, RecordMode
+from grpcvcr import AsyncRecordingChannel, Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 
@@ -59,13 +59,13 @@ async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
 
 ```python
 import pytest
-from grpcvr import RecordMode
+from grpcvcr import RecordMode
 
-@pytest.mark.grpcvr(cassette="user_test.yaml", record_mode=RecordMode.NONE)
-def test_get_user(grpcvr_cassette):
-    from grpcvr import RecordingChannel
+@pytest.mark.grpcvcr(cassette="user_test.yaml", record_mode=RecordMode.NONE)
+def test_get_user(grpcvcr_cassette):
+    from grpcvcr import RecordingChannel
 
-    with RecordingChannel(grpcvr_cassette, "localhost:50051") as rc:
+    with RecordingChannel(grpcvcr_cassette, "localhost:50051") as rc:
         stub = MyServiceStub(rc.channel)
         response = stub.GetUser(GetUserRequest(id=1))
         assert response.name == "Alice"
@@ -74,19 +74,19 @@ def test_get_user(grpcvr_cassette):
 Run in record mode:
 
 ```bash
-pytest --grpcvr-record=new_episodes
+pytest --grpcvcr-record=new_episodes
 ```
 
 Run in strict playback mode (CI):
 
 ```bash
-pytest --grpcvr-record=none
+pytest --grpcvcr-record=none
 ```
 
 ## Request Matching
 
 ```python
-from grpcvr import recorded_channel, MethodMatcher, RequestMatcher, MetadataMatcher
+from grpcvcr import recorded_channel, MethodMatcher, RequestMatcher, MetadataMatcher
 
 # Match on method + request body
 matcher = MethodMatcher() & RequestMatcher()

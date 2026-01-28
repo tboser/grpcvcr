@@ -1,6 +1,6 @@
 """Tests for matchers module."""
 
-from grpcvr.matchers import (
+from grpcvcr.matchers import (
     AllMatcher,
     CustomMatcher,
     MetadataMatcher,
@@ -8,7 +8,7 @@ from grpcvr.matchers import (
     RequestMatcher,
     find_matching_interaction,
 )
-from grpcvr.serialization import (
+from grpcvcr.serialization import (
     Interaction,
     InteractionRequest,
     InteractionResponse,

@@ -1,15 +1,15 @@
-  grpcvr - Complete Implementation Sketch
+  grpcvcr - Complete Implementation Sketch
 
   Project Overview
 
-  Name: grpcvr (gRPC Video Recorder - like VCR for gRPC)
+  Name: grpcvcr (gRPC Video Recorder - like VCR for gRPC)
   Tagline: Record and replay gRPC interactions for testing
 
   Directory Structure
 
-  grpcvr/
+  grpcvcr/
   ├── src/
-  │   └── grpcvr/
+  │   └── grpcvcr/
   │       ├── __init__.py              # Public API exports
   │       ├── _version.py              # Version (git-based)
   │       ├── cassette.py              # Cassette storage and management
@@ -78,22 +78,22 @@
   ---
   Core Implementation
 
-  src/grpcvr/__init__.py
+  src/grpcvcr/__init__.py
 
-  """grpcvr - Record and replay gRPC interactions for testing."""
+  """grpcvcr - Record and replay gRPC interactions for testing."""
 
-  from grpcvr._version import __version__
-  from grpcvr.cassette import Cassette, use_cassette
-  from grpcvr.channel import RecordingChannel, recorded_channel
-  from grpcvr.record_modes import RecordMode
-  from grpcvr.matchers import (
+  from grpcvcr._version import __version__
+  from grpcvcr.cassette import Cassette, use_cassette
+  from grpcvcr.channel import RecordingChannel, recorded_channel
+  from grpcvcr.record_modes import RecordMode
+  from grpcvcr.matchers import (
       Matcher,
       MethodMatcher,
       MetadataMatcher,
       RequestMatcher,
       AllMatcher,
   )
-  from grpcvr.errors import (
+  from grpcvcr.errors import (
       GrpcvrError,
       CassetteNotFoundError,
       NoMatchingInteractionError,
@@ -122,7 +122,7 @@
       "RecordingDisabledError",
   ]
 
-  src/grpcvr/record_modes.py
+  src/grpcvcr/record_modes.py
 
   """Recording mode definitions."""
 
@@ -148,20 +148,20 @@
       ALL = "all"
       ONCE = "once"
 
-  src/grpcvr/errors.py
+  src/grpcvcr/errors.py
 
-  """Custom exceptions for grpcvr."""
+  """Custom exceptions for grpcvcr."""
 
   from __future__ import annotations
 
   from typing import TYPE_CHECKING
 
   if TYPE_CHECKING:
-      from grpcvr.cassette import Interaction
+      from grpcvcr.cassette import Interaction
 
 
   class GrpcvrError(Exception):
-      """Base exception for all grpcvr errors."""
+      """Base exception for all grpcvcr errors."""
 
 
   class CassetteNotFoundError(GrpcvrError):
@@ -218,7 +218,7 @@
           self.cause = cause
           super().__init__(message)
 
-  src/grpcvr/serialization.py
+  src/grpcvcr/serialization.py
 
   """Serialization utilities for protobuf messages and cassettes."""
 
@@ -232,7 +232,7 @@
 
   import yaml
 
-  from grpcvr.errors import SerializationError
+  from grpcvcr.errors import SerializationError
 
 
   @dataclass
@@ -434,7 +434,7 @@
           except Exception as e:
               raise SerializationError(f"Failed to write {path}", e) from e
 
-  src/grpcvr/matchers.py
+  src/grpcvcr/matchers.py
 
   """Request matching strategies for finding recorded interactions."""
 
@@ -444,7 +444,7 @@
   from dataclasses import dataclass
   from typing import Callable
 
-  from grpcvr.serialization import Interaction, InteractionRequest
+  from grpcvcr.serialization import Interaction, InteractionRequest
 
 
   class Matcher(ABC):
@@ -615,7 +615,7 @@
               return interaction
       return None
 
-  src/grpcvr/cassette.py
+  src/grpcvcr/cassette.py
 
   """Cassette management - loading, saving, and using cassettes."""
 
@@ -627,14 +627,14 @@
   from pathlib import Path
   from typing import Iterator, Generator
 
-  from grpcvr.errors import (
+  from grpcvcr.errors import (
       CassetteNotFoundError,
       NoMatchingInteractionError,
       RecordingDisabledError,
   )
-  from grpcvr.matchers import Matcher, DEFAULT_MATCHER, find_matching_interaction
-  from grpcvr.record_modes import RecordMode
-  from grpcvr.serialization import (
+  from grpcvcr.matchers import Matcher, DEFAULT_MATCHER, find_matching_interaction
+  from grpcvcr.record_modes import RecordMode
+  from grpcvcr.serialization import (
       Interaction,
       InteractionRequest,
       InteractionResponse,
@@ -778,7 +778,7 @@
 
       Example:
           ```python
-          from grpcvr import use_cassette, RecordMode
+          from grpcvcr import use_cassette, RecordMode
 
           with use_cassette("tests/cassettes/test.yaml") as cassette:
               channel = cassette.wrap_channel(grpc.insecure_channel("localhost:50051"))
@@ -796,7 +796,7 @@
       finally:
           cassette.save()
 
-  src/grpcvr/interceptors/_base.py
+  src/grpcvcr/interceptors/_base.py
 
   """Shared interceptor logic."""
 
@@ -806,7 +806,7 @@
 
   import grpc
 
-  from grpcvr.serialization import (
+  from grpcvcr.serialization import (
       Interaction,
       InteractionRequest,
       InteractionResponse,
@@ -814,7 +814,7 @@
   )
 
   if TYPE_CHECKING:
-      from grpcvr.cassette import Cassette
+      from grpcvcr.cassette import Cassette
 
 
   def create_unary_response(
@@ -965,7 +965,7 @@
       def cancelled(self) -> bool:
           return False
 
-  src/grpcvr/interceptors/sync.py
+  src/grpcvcr/interceptors/sync.py
 
   """Synchronous gRPC interceptors for recording and playback."""
 
@@ -975,21 +975,21 @@
 
   import grpc
 
-  from grpcvr.errors import NoMatchingInteractionError
-  from grpcvr.serialization import (
+  from grpcvcr.errors import NoMatchingInteractionError
+  from grpcvcr.serialization import (
       Interaction,
       InteractionRequest,
       InteractionResponse,
       StreamingInteractionResponse,
   )
-  from grpcvr.interceptors._base import (
+  from grpcvcr.interceptors._base import (
       create_unary_response,
       create_streaming_response,
       _metadata_to_dict,
   )
 
   if TYPE_CHECKING:
-      from grpcvr.cassette import Cassette
+      from grpcvcr.cassette import Cassette
 
 
   class RecordingUnaryUnaryInterceptor(grpc.UnaryUnaryClientInterceptor):
@@ -1025,7 +1025,7 @@
               )
 
           if not self.cassette.can_record:
-              from grpcvr.errors import RecordingDisabledError
+              from grpcvcr.errors import RecordingDisabledError
               raise RecordingDisabledError(method)
 
           # Record mode - make real call
@@ -1090,7 +1090,7 @@
               )
 
           if not self.cassette.can_record:
-              from grpcvr.errors import RecordingDisabledError
+              from grpcvcr.errors import RecordingDisabledError
               raise RecordingDisabledError(method)
 
           # Make real call and consume stream
@@ -1164,7 +1164,7 @@
               return create_unary_response(interaction, lambda x: x)
 
           if not self.cassette.can_record:
-              from grpcvr.errors import RecordingDisabledError
+              from grpcvcr.errors import RecordingDisabledError
               raise RecordingDisabledError(method)
 
           # Make real call with consumed requests
@@ -1228,7 +1228,7 @@
               return create_streaming_response(interaction, deserializer)
 
           if not self.cassette.can_record:
-              from grpcvr.errors import RecordingDisabledError
+              from grpcvcr.errors import RecordingDisabledError
               raise RecordingDisabledError(method)
 
           # Make real call
@@ -1276,7 +1276,7 @@
           RecordingStreamStreamInterceptor(cassette),
       ]
 
-  src/grpcvr/interceptors/aio.py
+  src/grpcvcr/interceptors/aio.py
 
   """Async gRPC interceptors for recording and playback."""
 
@@ -1287,8 +1287,8 @@
   import grpc
   from grpc import aio
 
-  from grpcvr.errors import NoMatchingInteractionError, RecordingDisabledError
-  from grpcvr.serialization import (
+  from grpcvcr.errors import NoMatchingInteractionError, RecordingDisabledError
+  from grpcvcr.serialization import (
       Interaction,
       InteractionRequest,
       InteractionResponse,
@@ -1296,7 +1296,7 @@
   )
 
   if TYPE_CHECKING:
-      from grpcvr.cassette import Cassette
+      from grpcvcr.cassette import Cassette
 
 
   class _AsyncFakeUnaryCall(aio.Call):
@@ -1738,7 +1738,7 @@
           AsyncRecordingStreamStreamInterceptor(cassette),
       ]
 
-  src/grpcvr/channel.py
+  src/grpcvcr/channel.py
 
   """Channel wrappers for easy integration."""
 
@@ -1751,11 +1751,11 @@
   import grpc
   from grpc import aio
 
-  from grpcvr.cassette import Cassette
-  from grpcvr.matchers import Matcher, DEFAULT_MATCHER
-  from grpcvr.record_modes import RecordMode
-  from grpcvr.interceptors.sync import create_interceptors
-  from grpcvr.interceptors.aio import create_async_interceptors
+  from grpcvcr.cassette import Cassette
+  from grpcvcr.matchers import Matcher, DEFAULT_MATCHER
+  from grpcvcr.record_modes import RecordMode
+  from grpcvcr.interceptors.sync import create_interceptors
+  from grpcvcr.interceptors.aio import create_async_interceptors
 
 
   class RecordingChannel:
@@ -1876,7 +1876,7 @@
 
       Example:
           ```python
-          from grpcvr import recorded_channel
+          from grpcvcr import recorded_channel
 
           with recorded_channel("test.yaml", "localhost:50051") as channel:
               stub = MyServiceStub(channel)
@@ -1915,7 +1915,7 @@
 
       Example:
           ```python
-          from grpcvr import async_recorded_channel
+          from grpcvcr import async_recorded_channel
 
           async with async_recorded_channel("test.yaml", "localhost:50051") as channel:
               stub = MyServiceStub(channel)
@@ -1940,9 +1940,9 @@
           # Can't await here in sync context - cassette.save() is sync
           cassette.save()
 
-  src/grpcvr/pytest_plugin.py
+  src/grpcvcr/pytest_plugin.py
 
-  """pytest plugin for grpcvr integration."""
+  """pytest plugin for grpcvcr integration."""
 
   from __future__ import annotations
 
@@ -1952,10 +1952,10 @@
 
   import pytest
 
-  from grpcvr.cassette import Cassette
-  from grpcvr.channel import RecordingChannel, AsyncRecordingChannel
-  from grpcvr.matchers import DEFAULT_MATCHER, Matcher
-  from grpcvr.record_modes import RecordMode
+  from grpcvcr.cassette import Cassette
+  from grpcvcr.channel import RecordingChannel, AsyncRecordingChannel
+  from grpcvcr.matchers import DEFAULT_MATCHER, Matcher
+  from grpcvcr.record_modes import RecordMode
 
   if TYPE_CHECKING:
       from _pytest.config import Config
@@ -1963,17 +1963,17 @@
 
 
   def pytest_addoption(parser: pytest.Parser) -> None:
-      """Add grpcvr command line options."""
-      group = parser.getgroup("grpcvr")
+      """Add grpcvcr command line options."""
+      group = parser.getgroup("grpcvcr")
       group.addoption(
-          "--grpcvr-record",
+          "--grpcvcr-record",
           action="store",
           default=None,
           choices=["none", "new_episodes", "all", "once"],
           help="Override record mode for all cassettes",
       )
       group.addoption(
-          "--grpcvr-cassette-dir",
+          "--grpcvcr-cassette-dir",
           action="store",
           default="tests/cassettes",
           help="Default directory for cassette files",
@@ -1981,29 +1981,29 @@
 
 
   def pytest_configure(config: Config) -> None:
-      """Register grpcvr markers."""
+      """Register grpcvcr markers."""
       config.addinivalue_line(
           "markers",
-          "grpcvr(cassette, record_mode, match_on): "
+          "grpcvcr(cassette, record_mode, match_on): "
           "Mark test to use a specific cassette configuration",
       )
 
 
   @pytest.fixture
-  def grpcvr_cassette_dir(request: FixtureRequest) -> Path:
+  def grpcvcr_cassette_dir(request: FixtureRequest) -> Path:
       """Get the cassette directory for the current test."""
-      return Path(request.config.getoption("--grpcvr-cassette-dir"))
+      return Path(request.config.getoption("--grpcvcr-cassette-dir"))
 
 
   @pytest.fixture
-  def grpcvr_record_mode(request: FixtureRequest) -> RecordMode:
+  def grpcvcr_record_mode(request: FixtureRequest) -> RecordMode:
       """Get the record mode, considering CLI override."""
-      cli_mode = request.config.getoption("--grpcvr-record")
+      cli_mode = request.config.getoption("--grpcvcr-record")
       if cli_mode:
           return RecordMode(cli_mode)
 
       # Check for marker
-      marker = request.node.get_closest_marker("grpcvr")
+      marker = request.node.get_closest_marker("grpcvcr")
       if marker and "record_mode" in marker.kwargs:
           mode = marker.kwargs["record_mode"]
           if isinstance(mode, str):
@@ -2017,13 +2017,13 @@
 
 
   @pytest.fixture
-  def grpcvr_cassette_path(
+  def grpcvcr_cassette_path(
       request: FixtureRequest,
-      grpcvr_cassette_dir: Path,
+      grpcvcr_cassette_dir: Path,
   ) -> Path:
       """Generate cassette path based on test name."""
       # Check for marker with explicit cassette name
-      marker = request.node.get_closest_marker("grpcvr")
+      marker = request.node.get_closest_marker("grpcvcr")
       if marker and marker.args:
           cassette_name = marker.args[0]
       else:
@@ -2034,13 +2034,13 @@
       if request.node.cls:
           cassette_name = f"{request.node.cls.__name__}/{cassette_name}"
 
-      return grpcvr_cassette_dir / cassette_name
+      return grpcvcr_cassette_dir / cassette_name
 
 
   @pytest.fixture
   def cassette(
-      grpcvr_cassette_path: Path,
-      grpcvr_record_mode: RecordMode,
+      grpcvcr_cassette_path: Path,
+      grpcvcr_record_mode: RecordMode,
       request: FixtureRequest,
   ) -> Generator[Cassette, None, None]:
       """Fixture providing a cassette for the test.
@@ -2053,14 +2053,14 @@
           ```
       """
       # Get matcher from marker if specified
-      marker = request.node.get_closest_marker("grpcvr")
+      marker = request.node.get_closest_marker("grpcvcr")
       match_on = DEFAULT_MATCHER
       if marker and "match_on" in marker.kwargs:
           match_on = marker.kwargs["match_on"]
 
       cassette = Cassette(
-          path=grpcvr_cassette_path,
-          record_mode=grpcvr_record_mode,
+          path=grpcvcr_cassette_path,
+          record_mode=grpcvcr_record_mode,
           match_on=match_on,
       )
 
@@ -2090,7 +2090,7 @@
           ```
       """
       # Get target from marker or fixture
-      marker = request.node.get_closest_marker("grpcvr")
+      marker = request.node.get_closest_marker("grpcvcr")
       target = None
       if marker and "target" in marker.kwargs:
           target = marker.kwargs["target"]
@@ -2101,7 +2101,7 @@
               target = request.getfixturevalue("grpc_target")
           else:
               raise ValueError(
-                  "grpc_channel requires 'target' in @pytest.mark.grpcvr or a grpc_target fixture"
+                  "grpc_channel requires 'target' in @pytest.mark.grpcvcr or a grpc_target fixture"
               )
 
       channel = RecordingChannel(cassette, target)
@@ -2118,7 +2118,7 @@
   build-backend = "hatchling.build"
 
   [project]
-  name = "grpcvr"
+  name = "grpcvcr"
   description = "Record and replay gRPC interactions for testing"
   readme = "README.md"
   license = "MIT"
@@ -2150,13 +2150,13 @@
   aio = ["grpcio>=1.50.0"]  # aio is included in grpcio
 
   [project.entry-points.pytest11]
-  grpcvr = "grpcvr.pytest_plugin"
+  grpcvcr = "grpcvcr.pytest_plugin"
 
   [project.urls]
-  Homepage = "https://github.com/yourname/grpcvr"
-  Documentation = "https://grpcvr.readthedocs.io"
-  Repository = "https://github.com/yourname/grpcvr"
-  Changelog = "https://github.com/yourname/grpcvr/blob/main/CHANGELOG.md"
+  Homepage = "https://github.com/yourname/grpcvcr"
+  Documentation = "https://grpcvcr.readthedocs.io"
+  Repository = "https://github.com/yourname/grpcvcr"
+  Changelog = "https://github.com/yourname/grpcvcr/blob/main/CHANGELOG.md"
 
   [tool.hatch.version]
   source = "vcs"
@@ -2170,7 +2170,7 @@
   ]
 
   [tool.hatch.build.targets.wheel]
-  packages = ["src/grpcvr"]
+  packages = ["src/grpcvcr"]
 
   # ============== Dependency Groups ==============
 
@@ -2209,11 +2209,11 @@
       "ignore::DeprecationWarning:grpc.*",
   ]
   markers = [
-      "grpcvr: configure grpcvr cassette for test",
+      "grpcvcr: configure grpcvcr cassette for test",
   ]
 
   [tool.coverage.run]
-  source = ["src/grpcvr"]
+  source = ["src/grpcvcr"]
   branch = true
   parallel = true
 
@@ -2253,7 +2253,7 @@
   ]
 
   [tool.ruff.lint.isort]
-  known-first-party = ["grpcvr"]
+  known-first-party = ["grpcvcr"]
 
   [tool.ruff.format]
   quote-style = "double"
@@ -2492,7 +2492,7 @@
 
   @pytest.fixture
   def grpc_target(grpc_server: str) -> str:
-      """Alias for grpc_server for compatibility with grpcvr fixtures."""
+      """Alias for grpc_server for compatibility with grpcvcr fixtures."""
       return grpc_server
 
 
@@ -2568,8 +2568,8 @@
   import grpc
   import pytest
 
-  from grpcvr import Cassette, RecordMode, recorded_channel, RecordingChannel
-  from grpcvr.errors import NoMatchingInteractionError, RecordingDisabledError
+  from grpcvcr import Cassette, RecordMode, recorded_channel, RecordingChannel
+  from grpcvcr.errors import NoMatchingInteractionError, RecordingDisabledError
 
   from tests.generated import test_service_pb2 as pb2
   from tests.generated import test_service_pb2_grpc as pb2_grpc
@@ -2603,7 +2603,7 @@
           self, grpc_server: str, cassette_path: Path
       ) -> None:
           """Test that NONE mode raises when cassette doesn't exist."""
-          from grpcvr.errors import CassetteNotFoundError
+          from grpcvcr.errors import CassetteNotFoundError
 
           with pytest.raises(CassetteNotFoundError):
               with recorded_channel(
@@ -2718,7 +2718,7 @@
   import grpc
   import pytest
 
-  from grpcvr import Cassette, RecordMode, recorded_channel
+  from grpcvcr import Cassette, RecordMode, recorded_channel
 
   from tests.generated import test_service_pb2 as pb2
   from tests.generated import test_service_pb2_grpc as pb2_grpc
@@ -2825,8 +2825,8 @@
   from grpc import aio
   import pytest
 
-  from grpcvr import Cassette, RecordMode
-  from grpcvr.channel import AsyncRecordingChannel
+  from grpcvcr import Cassette, RecordMode
+  from grpcvcr.channel import AsyncRecordingChannel
 
   from tests.generated import test_service_pb2 as pb2
   from tests.generated import test_service_pb2_grpc as pb2_grpc
@@ -2881,14 +2881,14 @@
 
   import pytest
 
-  from grpcvr.matchers import (
+  from grpcvcr.matchers import (
       MethodMatcher,
       MetadataMatcher,
       RequestMatcher,
       CustomMatcher,
       AllMatcher,
   )
-  from grpcvr.serialization import InteractionRequest
+  from grpcvcr.serialization import InteractionRequest
 
 
   class TestMethodMatcher:
@@ -3017,11 +3017,11 @@
 
   mkdocs.yml
 
-  site_name: grpcvr
+  site_name: grpcvcr
   site_description: Record and replay gRPC interactions for testing
-  site_url: https://grpcvr.readthedocs.io
-  repo_url: https://github.com/yourname/grpcvr
-  repo_name: yourname/grpcvr
+  site_url: https://grpcvcr.readthedocs.io
+  repo_url: https://github.com/yourname/grpcvcr
+  repo_name: yourname/grpcvcr
 
   theme:
     name: material
@@ -3094,11 +3094,11 @@
 
   docs/index.md
 
-  # grpcvr
+  # grpcvcr
 
   **Record and replay gRPC interactions for testing.**
 
-  grpcvr is a testing library that records gRPC calls during test runs and replays
+  grpcvcr is a testing library that records gRPC calls during test runs and replays
   them later, eliminating the need for a live server during playback. Think
   [VCR.py](https://vcrpy.readthedocs.io/) but for gRPC.
 
@@ -3114,7 +3114,7 @@
   ## Quick Example
 
   ```python
-  from grpcvr import recorded_channel
+  from grpcvcr import recorded_channel
 
   # First run: records to cassette
   with recorded_channel("tests/cassettes/test.yaml", "localhost:50051") as channel:
@@ -3126,9 +3126,9 @@
 
   Installation
 
-  pip install grpcvr
+  pip install grpcvcr
 
-  Why grpcvr?
+  Why grpcvcr?
 
   Testing gRPC services presents challenges:
 
@@ -3137,7 +3137,7 @@
   3. Flaky tests - Network issues cause random failures
   4. Complex setup - CI needs server infrastructure
 
-  grpcvr solves these by recording interactions once, then replaying them:
+  grpcvcr solves these by recording interactions once, then replaying them:
 
   - No server needed - Playback works offline
   - Fast tests - No network latency
@@ -3149,20 +3149,20 @@
   ```markdown
   # Quickstart
 
-  This guide will get you up and running with grpcvr in minutes.
+  This guide will get you up and running with grpcvcr in minutes.
 
   ## Installation
 
   ```bash
-  pip install grpcvr
+  pip install grpcvcr
 
   Basic Usage
 
   Recording
 
-  The simplest way to use grpcvr is with the recorded_channel context manager:
+  The simplest way to use grpcvcr is with the recorded_channel context manager:
 
-  from grpcvr import recorded_channel
+  from grpcvcr import recorded_channel
 
   # This will record to "test.yaml" on first run
   with recorded_channel("test.yaml", "localhost:50051") as channel:
@@ -3172,9 +3172,9 @@
 
   Playback
 
-  On subsequent runs, grpcvr plays back the recorded response:
+  On subsequent runs, grpcvcr plays back the recorded response:
 
-  from grpcvr import recorded_channel, RecordMode
+  from grpcvcr import recorded_channel, RecordMode
 
   # Force playback only - fails if cassette missing
   with recorded_channel(
@@ -3188,10 +3188,10 @@
 
   pytest Integration
 
-  grpcvr includes a pytest plugin for automatic cassette management:
+  grpcvcr includes a pytest plugin for automatic cassette management:
 
   import pytest
-  from grpcvr import RecordingChannel
+  from grpcvcr import RecordingChannel
 
   @pytest.fixture
   def grpc_target():
@@ -3204,9 +3204,9 @@
       response = stub.GetUser(GetUserRequest(id=1))
       assert response.name == "Alice"
 
-  Run with --grpcvr-record=none in CI to ensure all cassettes exist:
+  Run with --grpcvcr-record=none in CI to ensure all cassettes exist:
 
-  pytest --grpcvr-record=none
+  pytest --grpcvcr-record=none
 
   Record Modes
   ┌──────────────┬──────────────────────────────────────────┐

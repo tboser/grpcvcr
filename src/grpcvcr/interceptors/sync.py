@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, Any
 
 import grpc
 
-from grpcvr.errors import RecordingDisabledError
-from grpcvr.interceptors._base import (
+from grpcvcr.errors import RecordingDisabledError
+from grpcvcr.interceptors._base import (
     create_streaming_response,
     create_unary_response,
 )
-from grpcvr.record_modes import RecordMode
-from grpcvr.serialization import (
+from grpcvcr.record_modes import RecordMode
+from grpcvcr.serialization import (
     Interaction,
     InteractionRequest,
     InteractionResponse,
@@ -21,7 +21,7 @@ from grpcvr.serialization import (
 )
 
 if TYPE_CHECKING:
-    from grpcvr.cassette import Cassette
+    from grpcvcr.cassette import Cassette
 
 
 class RecordingUnaryUnaryInterceptor(grpc.UnaryUnaryClientInterceptor):  # type: ignore[misc]

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from grpcvr import (
+from grpcvcr import (
     AsyncRecordingChannel,
     Cassette,
     MethodMatcher,
@@ -14,7 +14,7 @@ from grpcvr import (
     RequestMatcher,
     async_recorded_channel,
 )
-from grpcvr.errors import RecordingDisabledError
+from grpcvcr.errors import RecordingDisabledError
 
 
 @pytest.mark.asyncio

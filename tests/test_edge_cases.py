@@ -11,7 +11,7 @@ import grpc
 import pytest
 from grpc import aio
 
-from grpcvr import (
+from grpcvcr import (
     AllMatcher,
     Cassette,
     MetadataMatcher,
@@ -19,11 +19,11 @@ from grpcvr import (
     RecordMode,
     use_cassette,
 )
-from grpcvr.channel import AsyncRecordingChannel, RecordingChannel
-from grpcvr.errors import SerializationError
-from grpcvr.interceptors._base import _FakeStreamingCall, _FakeUnaryCall
-from grpcvr.interceptors.aio import _AsyncFakeStreamingCall, _AsyncFakeUnaryCall
-from grpcvr.serialization import (
+from grpcvcr.channel import AsyncRecordingChannel, RecordingChannel
+from grpcvcr.errors import SerializationError
+from grpcvcr.interceptors._base import _FakeStreamingCall, _FakeUnaryCall
+from grpcvcr.interceptors.aio import _AsyncFakeStreamingCall, _AsyncFakeUnaryCall
+from grpcvcr.serialization import (
     CassetteData,
     CassetteSerializer,
     Interaction,

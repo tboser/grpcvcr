@@ -1,6 +1,6 @@
 # Record Modes
 
-Record modes control when grpcvr records new interactions versus playing back existing ones.
+Record modes control when grpcvcr records new interactions versus playing back existing ones.
 
 ## Available Modes
 
@@ -9,7 +9,7 @@ Record modes control when grpcvr records new interactions versus playing back ex
 Playback only. Never records new interactions.
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode
+from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.NONE)
 ```
@@ -25,7 +25,7 @@ cassette = Cassette("test.yaml", record_mode=RecordMode.NONE)
 Records new interactions, replays existing ones. This is the default mode.
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode
+from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.NEW_EPISODES)
 ```
@@ -40,7 +40,7 @@ cassette = Cassette("test.yaml", record_mode=RecordMode.NEW_EPISODES)
 Always records, never replays.
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode
+from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 ```
@@ -55,7 +55,7 @@ cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 Records once if cassette is empty, then playback only.
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode
+from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.ONCE)
 ```
@@ -71,10 +71,10 @@ Override record mode for all tests:
 
 ```bash test="skip"
 # Force re-record everything
-pytest --grpcvr-record=all
+pytest --grpcvcr-record=all
 
 # Playback only (fail if missing)
-pytest --grpcvr-record=none
+pytest --grpcvcr-record=none
 ```
 
 ## Comparison Table

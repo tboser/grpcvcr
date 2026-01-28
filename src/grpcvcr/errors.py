@@ -1,18 +1,18 @@
-"""Custom exceptions for grpcvr."""
+"""Custom exceptions for grpcvcr."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from grpcvr.serialization import Interaction
+    from grpcvcr.serialization import Interaction
 
 
 class GrpcvrError(Exception):
-    """Base exception for all grpcvr errors.
+    """Base exception for all grpcvcr errors.
 
-    All grpcvr exceptions inherit from this class, making it easy to
-    catch any grpcvr-specific error.
+    All grpcvcr exceptions inherit from this class, making it easy to
+    catch any grpcvcr-specific error.
 
     Example:
         ```python
@@ -21,7 +21,7 @@ class GrpcvrError(Exception):
                 stub = MyServiceStub(channel)
                 response = stub.GetUser(request)
         except GrpcvrError as e:
-            print(f"grpcvr error: {e}")
+            print(f"grpcvcr error: {e}")
         ```
     """
 

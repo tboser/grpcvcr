@@ -4,7 +4,7 @@ Cassettes store recorded gRPC interactions for replay during tests.
 
 ## What is a Cassette?
 
-A cassette is a file (YAML or JSON) containing recorded gRPC request/response pairs. When you run tests with grpcvr, interactions are recorded to cassettes on the first run and replayed from cassettes on subsequent runs.
+A cassette is a file (YAML or JSON) containing recorded gRPC request/response pairs. When you run tests with grpcvcr, interactions are recorded to cassettes on the first run and replayed from cassettes on subsequent runs.
 
 ## Cassette Format
 
@@ -32,7 +32,7 @@ interactions:
 By default, cassettes are stored in `tests/cassettes/`. You can customize this:
 
 ```python test="skip"
-from grpcvr import Cassette
+from grpcvcr import Cassette
 
 # Explicit path
 cassette = Cassette("path/to/my_cassette.yaml")
@@ -45,7 +45,7 @@ With pytest:
 
 ```bash test="skip"
 # Override cassette directory
-pytest --grpcvr-cassette-dir=my_cassettes/
+pytest --grpcvcr-cassette-dir=my_cassettes/
 ```
 
 ## Managing Cassettes
@@ -55,7 +55,7 @@ pytest --grpcvr-cassette-dir=my_cassettes/
 To re-record all interactions:
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode
+from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 ```
@@ -63,7 +63,7 @@ cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 Or via CLI:
 
 ```bash test="skip"
-pytest --grpcvr-record=all
+pytest --grpcvcr-record=all
 ```
 
 ### Committing Cassettes

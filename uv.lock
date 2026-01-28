@@ -426,7 +426,7 @@ wheels = [
 ]
 
 [[package]]
-name = "grpcvr"
+name = "grpcvcr"
 source = { editable = "." }
 dependencies = [
     { name = "grpcio" },

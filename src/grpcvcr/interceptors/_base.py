@@ -7,7 +7,7 @@ from typing import Any
 
 import grpc
 
-from grpcvr.serialization import (
+from grpcvcr.serialization import (
     Interaction,
     InteractionResponse,
     StreamingInteractionResponse,

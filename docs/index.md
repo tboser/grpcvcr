@@ -1,10 +1,10 @@
-# grpcvr
+# grpcvcr
 
 **Record and replay gRPC interactions for testing** - like VCR.py but for gRPC/HTTP2.
 
-## What is grpcvr?
+## What is grpcvcr?
 
-grpcvr is a testing library that records your gRPC client interactions and replays them during subsequent test runs. This enables:
+grpcvcr is a testing library that records your gRPC client interactions and replays them during subsequent test runs. This enables:
 
 - **Fast tests**: No network calls during replay
 - **Deterministic tests**: Same responses every time
@@ -14,7 +14,7 @@ grpcvr is a testing library that records your gRPC client interactions and repla
 ## Quick Example
 
 ```python test="skip"
-from grpcvr import recorded_channel
+from grpcvcr import recorded_channel
 
 from myservice_pb2 import GetUserRequest
 from myservice_pb2_grpc import UserServiceStub
@@ -38,11 +38,11 @@ with recorded_channel("tests/cassettes/user_test.yaml", "localhost:50051") as ch
 ## Installation
 
 ```bash test="skip"
-pip install grpcvr
+pip install grpcvcr
 ```
 
 ## Next Steps
 
 - [Installation Guide](installation.md) - Detailed setup instructions
 - [Quick Start](quickstart.md) - Get up and running in minutes
-- [Concepts](concepts/cassettes.md) - Understand how grpcvr works
+- [Concepts](concepts/cassettes.md) - Understand how grpcvcr works

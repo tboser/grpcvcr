@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in grpcvr
+description: Report a bug or unexpected behavior in grpcvcr
 labels: ["bug"]
 
 body:
@@ -8,7 +8,7 @@ body:
     attributes:
       label: Initial Checks
       options:
-        - label: I'm using the [latest version](https://github.com/tboser/grpcvcr/releases/latest) of grpcvr
+        - label: I'm using the [latest version](https://github.com/tboser/grpcvcr/releases/latest) of grpcvcr
           required: true
         - label: I've searched [existing issues](https://github.com/tboser/grpcvcr/issues) before opening this
           required: true
@@ -29,7 +29,7 @@ body:
         If possible, add a self-contained
         [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example).
       placeholder: |
-        from grpcvr import recorded_channel
+        from grpcvcr import recorded_channel
 
         with recorded_channel("test.yaml", "localhost:50051") as channel:
             ...
@@ -41,7 +41,7 @@ body:
       label: Version Information
       value: |
         - Python:
-        - grpcvr:
+        - grpcvcr:
         - grpcio:
     validations:
       required: true

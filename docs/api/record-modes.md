@@ -1,11 +1,11 @@
 # Record Modes
 
-Record modes control when grpcvr records new interactions versus playing back existing ones.
+Record modes control when grpcvcr records new interactions versus playing back existing ones.
 
 ## Overview
 
 ```python
-from grpcvr import RecordMode
+from grpcvcr import RecordMode
 
 # Always record (useful for updating cassettes)
 print(RecordMode.ALL)
@@ -31,7 +31,7 @@ print(RecordMode.ONCE)
 
 ## API Reference
 
-::: grpcvr.RecordMode
+::: grpcvcr.RecordMode
     options:
       members:
         - NONE

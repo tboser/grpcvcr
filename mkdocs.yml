@@ -1,6 +1,6 @@
-site_name: grpcvr
+site_name: grpcvcr
 site_description: Record and replay gRPC interactions for testing
-site_url: https://grpcvr.readthedocs.io
+site_url: https://grpcvcr.readthedocs.io
 
 repo_name: tboser/grpcvcr
 repo_url: https://github.com/tboser/grpcvcr

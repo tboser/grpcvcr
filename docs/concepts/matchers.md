@@ -1,13 +1,13 @@
 # Request Matching
 
-Matchers determine how grpcvr finds the right recorded response for each request.
+Matchers determine how grpcvcr finds the right recorded response for each request.
 
 ## Default Matching
 
-By default, grpcvr matches requests by method name only:
+By default, grpcvcr matches requests by method name only:
 
 ```python test="skip"
-from grpcvr import Cassette
+from grpcvcr import Cassette
 
 # Uses MethodMatcher by default
 cassette = Cassette("test.yaml")
@@ -22,7 +22,7 @@ This means two requests to the same method will match the same recorded response
 Matches by the gRPC method name (e.g., `/package.Service/Method`).
 
 ```python
-from grpcvr import MethodMatcher
+from grpcvcr import MethodMatcher
 
 matcher = MethodMatcher()
 ```
@@ -32,7 +32,7 @@ matcher = MethodMatcher()
 Matches by the serialized request body.
 
 ```python
-from grpcvr import RequestMatcher
+from grpcvcr import RequestMatcher
 
 matcher = RequestMatcher()
 ```
@@ -42,7 +42,7 @@ matcher = RequestMatcher()
 Matches by request metadata (headers).
 
 ```python
-from grpcvr import MetadataMatcher
+from grpcvcr import MetadataMatcher
 
 # Match all metadata
 matcher = MetadataMatcher()
@@ -59,7 +59,7 @@ matcher = MetadataMatcher(ignore_keys=["x-timestamp"])
 Use `&` to combine matchers:
 
 ```python
-from grpcvr import MetadataMatcher, MethodMatcher, RequestMatcher
+from grpcvcr import MetadataMatcher, MethodMatcher, RequestMatcher
 
 # Match by method AND body
 matcher = MethodMatcher() & RequestMatcher()
@@ -73,7 +73,7 @@ matcher = MethodMatcher() & RequestMatcher() & MetadataMatcher(keys=["authorizat
 Create custom matching logic:
 
 ```python
-from grpcvr import CustomMatcher
+from grpcvcr import CustomMatcher
 
 
 def my_matcher(request, recorded_request):
@@ -89,7 +89,7 @@ matcher = CustomMatcher(my_matcher)
 Pass matchers when creating a cassette:
 
 ```python test="skip"
-from grpcvr import Cassette, MethodMatcher, RequestMatcher
+from grpcvcr import Cassette, MethodMatcher, RequestMatcher
 
 matcher = MethodMatcher() & RequestMatcher()
 cassette = Cassette("test.yaml", match_on=matcher)

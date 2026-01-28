@@ -9,11 +9,11 @@ from pathlib import Path
 import grpc
 from grpc import aio
 
-from grpcvr.cassette import Cassette
-from grpcvr.interceptors.aio import create_async_interceptors
-from grpcvr.interceptors.sync import create_interceptors
-from grpcvr.matchers import DEFAULT_MATCHER, Matcher
-from grpcvr.record_modes import RecordMode
+from grpcvcr.cassette import Cassette
+from grpcvcr.interceptors.aio import create_async_interceptors
+from grpcvcr.interceptors.sync import create_interceptors
+from grpcvcr.matchers import DEFAULT_MATCHER, Matcher
+from grpcvcr.record_modes import RecordMode
 
 
 class RecordingChannel:
@@ -24,7 +24,7 @@ class RecordingChannel:
 
     Example:
         ```python
-        from grpcvr import Cassette, RecordingChannel, RecordMode
+        from grpcvcr import Cassette, RecordingChannel, RecordMode
 
         cassette = Cassette("tests/cassettes/test.yaml", record_mode=RecordMode.ALL)
 
@@ -86,7 +86,7 @@ class AsyncRecordingChannel:
 
     Example:
         ```python
-        from grpcvr import Cassette, AsyncRecordingChannel, RecordMode
+        from grpcvcr import Cassette, AsyncRecordingChannel, RecordMode
 
         cassette = Cassette("tests/cassettes/test.yaml", record_mode=RecordMode.ALL)
 
@@ -166,7 +166,7 @@ def recorded_channel(
 
     Example:
         ```python
-        from grpcvr import recorded_channel, RecordMode
+        from grpcvcr import recorded_channel, RecordMode
 
         # Record interactions
         with recorded_channel("test.yaml", "localhost:50051", record_mode=RecordMode.ALL) as channel:
@@ -222,7 +222,7 @@ def async_recorded_channel(
 
     Example:
         ```python
-        from grpcvr import async_recorded_channel
+        from grpcvcr import async_recorded_channel
 
         with async_recorded_channel("test.yaml", "localhost:50051") as channel:
             stub = MyServiceStub(channel)

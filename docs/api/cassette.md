@@ -7,7 +7,7 @@ The `Cassette` class is the core container for recording and replaying gRPC inte
 A cassette stores a collection of recorded gRPC interactions (request/response pairs) and provides methods to find matching interactions during playback.
 
 ```python test="skip"
-from grpcvr import Cassette, RecordMode, RecordingChannel
+from grpcvcr import Cassette, RecordMode, RecordingChannel
 
 # Create a cassette for recording
 cassette = Cassette("tests/cassettes/my_test.yaml", record_mode=RecordMode.NEW_EPISODES)
@@ -20,7 +20,7 @@ with RecordingChannel(cassette, "localhost:50051") as recording:
 
 ## API Reference
 
-::: grpcvr.Cassette
+::: grpcvcr.Cassette
     options:
       members:
         - __init__
@@ -32,4 +32,4 @@ with RecordingChannel(cassette, "localhost:50051") as recording:
         - record_mode
         - can_record
 
-::: grpcvr.use_cassette
+::: grpcvcr.use_cassette

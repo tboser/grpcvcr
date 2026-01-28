@@ -1,6 +1,6 @@
 """gRPC interceptors for recording and playback."""
 
-from grpcvr.interceptors.sync import (
+from grpcvcr.interceptors.sync import (
     RecordingStreamStreamInterceptor,
     RecordingStreamUnaryInterceptor,
     RecordingUnaryStreamInterceptor,

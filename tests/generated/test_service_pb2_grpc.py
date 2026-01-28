@@ -26,7 +26,7 @@ if _version_not_supported:
 
 
 class TestServiceStub(object):
-    """A simple test service for grpcvr unit tests
+    """A simple test service for grpcvcr unit tests
     """
 
     def __init__(self, channel):
@@ -58,7 +58,7 @@ class TestServiceStub(object):
 
 
 class TestServiceServicer(object):
-    """A simple test service for grpcvr unit tests
+    """A simple test service for grpcvcr unit tests
     """
 
     def GetUser(self, request, context):
@@ -121,7 +121,7 @@ def add_TestServiceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class TestService(object):
-    """A simple test service for grpcvr unit tests
+    """A simple test service for grpcvcr unit tests
     """
 
     @staticmethod

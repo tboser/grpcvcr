@@ -1,16 +1,16 @@
 # Guides
 
-Practical guides for using grpcvr in different scenarios.
+Practical guides for using grpcvcr in different scenarios.
 
 ## Available Guides
 
 ### [pytest Integration](pytest.md)
 
-Set up grpcvr with pytest for seamless test recording and playback. Covers fixtures, markers, and CLI options.
+Set up grpcvcr with pytest for seamless test recording and playback. Covers fixtures, markers, and CLI options.
 
 ### [Async Usage](async.md)
 
-Using grpcvr with `grpc.aio` for async gRPC applications.
+Using grpcvcr with `grpc.aio` for async gRPC applications.
 
 ### [Custom Matchers](custom-matchers.md)
 

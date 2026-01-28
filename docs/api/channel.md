@@ -4,10 +4,10 @@ Recording channel wrappers that intercept gRPC calls for recording and playback.
 
 ## Overview
 
-grpcvr provides channel wrappers that intercept all gRPC calls, recording them during the first run and replaying them from the cassette on subsequent runs.
+grpcvcr provides channel wrappers that intercept all gRPC calls, recording them during the first run and replaying them from the cassette on subsequent runs.
 
 ```python test="skip"
-from grpcvr import RecordMode, recorded_channel
+from grpcvcr import RecordMode, recorded_channel
 
 # Simple usage with context manager
 with recorded_channel("test.yaml", "localhost:50051", record_mode=RecordMode.ALL) as channel:
@@ -17,7 +17,7 @@ with recorded_channel("test.yaml", "localhost:50051", record_mode=RecordMode.ALL
 
 ## API Reference
 
-::: grpcvr.RecordingChannel
+::: grpcvcr.RecordingChannel
     options:
       members:
         - __init__
@@ -25,4 +25,4 @@ with recorded_channel("test.yaml", "localhost:50051", record_mode=RecordMode.ALL
         - __exit__
         - channel
 
-::: grpcvr.recorded_channel
+::: grpcvcr.recorded_channel

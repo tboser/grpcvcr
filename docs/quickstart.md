@@ -1,13 +1,13 @@
 # Quick Start
 
-This guide will get you up and running with grpcvr in minutes.
+This guide will get you up and running with grpcvcr in minutes.
 
 ## Basic Usage
 
-The simplest way to use grpcvr is with the `recorded_channel` context manager:
+The simplest way to use grpcvcr is with the `recorded_channel` context manager:
 
 ```python test="skip"
-from grpcvr import recorded_channel
+from grpcvcr import recorded_channel
 
 from myservice_pb2 import GetUserRequest
 from myservice_pb2_grpc import UserServiceStub
@@ -22,10 +22,10 @@ with recorded_channel("tests/cassettes/user.yaml", "localhost:50051") as channel
 
 ## Recording Modes
 
-Control when grpcvr records vs replays:
+Control when grpcvcr records vs replays:
 
 ```python
-from grpcvr import RecordMode
+from grpcvcr import RecordMode
 
 # Available modes
 print(RecordMode.NEW_EPISODES)  # Default: replay existing, record new
@@ -36,19 +36,19 @@ print(RecordMode.ONCE)  # Record once if cassette empty
 
 ## pytest Integration
 
-grpcvr includes a pytest plugin with helpful fixtures:
+grpcvcr includes a pytest plugin with helpful fixtures:
 
 ```python test="skip"
 import pytest
-from grpcvr import RecordingChannel
+from grpcvcr import RecordingChannel
 
 from myservice_pb2 import GetUserRequest
 from myservice_pb2_grpc import UserServiceStub
 
 
-def test_get_user(grpcvr_cassette):
+def test_get_user(grpcvcr_cassette):
     """Cassette automatically named after test: test_get_user.yaml"""
-    with RecordingChannel(grpcvr_cassette, "localhost:50051") as recording:
+    with RecordingChannel(grpcvcr_cassette, "localhost:50051") as recording:
         stub = UserServiceStub(recording.channel)
         response = stub.GetUser(GetUserRequest(id=1))
         assert response.name == "Alice"
@@ -58,24 +58,24 @@ Use markers for custom configuration:
 
 ```python test="skip"
 import pytest
-from grpcvr import MethodMatcher, RecordMode, RequestMatcher
+from grpcvcr import MethodMatcher, RecordMode, RequestMatcher
 
 
-@pytest.mark.grpcvr(
+@pytest.mark.grpcvcr(
     cassette="custom_name.yaml",
     record_mode=RecordMode.ALL,
     match_on=MethodMatcher() & RequestMatcher(),
 )
-def test_with_options(grpcvr_cassette):
+def test_with_options(grpcvcr_cassette):
     pass
 ```
 
 ## Request Matching
 
-By default, grpcvr matches by method name. Customize matching for more precise control:
+By default, grpcvcr matches by method name. Customize matching for more precise control:
 
 ```python
-from grpcvr import MetadataMatcher, MethodMatcher, RequestMatcher
+from grpcvcr import MetadataMatcher, MethodMatcher, RequestMatcher
 
 # Match by method AND request body
 matcher = MethodMatcher() & RequestMatcher()

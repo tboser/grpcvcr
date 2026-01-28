@@ -8,14 +8,14 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from grpcvr.errors import (
+from grpcvcr.errors import (
     CassetteNotFoundError,
     NoMatchingInteractionError,
     RecordingDisabledError,
 )
-from grpcvr.matchers import DEFAULT_MATCHER, Matcher, find_matching_interaction
-from grpcvr.record_modes import RecordMode
-from grpcvr.serialization import (
+from grpcvcr.matchers import DEFAULT_MATCHER, Matcher, find_matching_interaction
+from grpcvcr.record_modes import RecordMode
+from grpcvcr.serialization import (
     CassetteData,
     CassetteSerializer,
     Interaction,
@@ -33,7 +33,7 @@ class Cassette:
 
     Example:
         ```python
-        from grpcvr import Cassette, RecordMode, RecordingChannel
+        from grpcvcr import Cassette, RecordMode, RecordingChannel
 
         # Record interactions
         with Cassette("tests/cassettes/my_test.yaml", record_mode=RecordMode.ALL) as cassette:
@@ -185,7 +185,7 @@ def use_cassette(
 
     Example:
         ```python
-        from grpcvr import use_cassette, RecordMode, RecordingChannel
+        from grpcvcr import use_cassette, RecordMode, RecordingChannel
 
         with use_cassette("tests/cassettes/test.yaml", record_mode=RecordMode.ALL) as cassette:
             with RecordingChannel(cassette, "localhost:50051") as recording:

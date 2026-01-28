@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from grpcvr.serialization import Interaction, InteractionRequest
+from grpcvcr.serialization import Interaction, InteractionRequest
 
 
 class Matcher(ABC):

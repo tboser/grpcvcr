@@ -1,17 +1,15 @@
 # Advanced Patterns
 
-This page covers advanced usage patterns for grpcvr.
+Advanced usage patterns and techniques for grpcvcr.
 
-## Custom Request Matching
+## Custom Matchers
 
-By default, grpcvr matches requests by method name and request body. You can customize this behavior with matchers.
+### Method-Only Matching
 
-### Match by Method Only
+```python test="skip"
+from grpcvcr import MethodMatcher, recorded_channel
 
-Useful when request bodies contain timestamps or random IDs:
-
-```python
-from grpcvr import recorded_channel, MethodMatcher
+target = "localhost:50051"
 
 with recorded_channel(
     "test.yaml",
@@ -23,12 +21,12 @@ with recorded_channel(
     response = stub.GetUser(GetUserRequest(id=1))
 ```
 
-### Match by Specific Metadata
+### Metadata Matching
 
-Match requests based on specific metadata keys:
+```python test="skip"
+from grpcvcr import MetadataMatcher, recorded_channel
 
-```python
-from grpcvr import recorded_channel, MetadataMatcher
+target = "localhost:50051"
 
 with recorded_channel(
     "test.yaml",
@@ -38,41 +36,28 @@ with recorded_channel(
     stub = MyServiceStub(channel)
     response = stub.GetUser(
         GetUserRequest(id=1),
-        metadata=[("authorization", "Bearer token123")],
+        metadata=[("authorization", "***")],
     )
-```
-
-### Ignore Dynamic Metadata
-
-Ignore metadata that changes between requests:
-
-```python
-from grpcvr import MetadataMatcher
-
-matcher = MetadataMatcher(ignore_keys=["x-request-id", "x-timestamp"])
 ```
 
 ### Combining Matchers
 
-Combine matchers with the `&` operator:
-
 ```python
-from grpcvr import MethodMatcher, RequestMatcher, MetadataMatcher
+from grpcvcr import MetadataMatcher, MethodMatcher, RequestMatcher
 
 # Match method AND request body
 matcher = MethodMatcher() & RequestMatcher()
 
-# Match method AND specific metadata
+# Match method AND specific metadata keys
 matcher = MethodMatcher() & MetadataMatcher(keys=["authorization"])
 ```
 
-### Custom Matcher Functions
+### Custom Match Functions
 
-For complex matching logic, use `CustomMatcher`:
+```python test="skip"
+from grpcvcr import CustomMatcher, MethodMatcher
+from grpcvcr.serialization import InteractionRequest
 
-```python
-from grpcvr import CustomMatcher, MethodMatcher
-from grpcvr.serialization import InteractionRequest
 
 def match_by_user_id(request: InteractionRequest, recorded: InteractionRequest) -> bool:
     """Match if the user ID in the request body matches."""
@@ -81,78 +66,54 @@ def match_by_user_id(request: InteractionRequest, recorded: InteractionRequest) 
     rec_body = YourRequest.FromString(recorded.get_body_bytes())
     return req_body.user_id == rec_body.user_id
 
+
 matcher = MethodMatcher() & CustomMatcher(func=match_by_user_id)
 ```
 
-## Working with Cassette Files
+## Cassette Formats
 
-### Cassette Format
-
-Cassettes are stored as YAML (or JSON) files:
+### YAML (Default)
 
 ```yaml
-version: 1
+# test.yaml
 interactions:
   - request:
-      method: /mypackage.MyService/GetUser
-      body: CAE=  # base64-encoded protobuf
-      metadata:
-        authorization:
-          - Bearer token123
+      method: /myservice.MyService/GetUser
+      body_base64: CAE=
+      metadata: []
     response:
-      body: CAESBUFsaWNl  # base64-encoded protobuf
+      body_base64: CgVBbGljZQ==
       code: OK
-      details: null
-      trailing_metadata: {}
-    rpc_type: unary
+      details: ""
 ```
 
-### Inspecting Cassettes
+### JSON
 
-Load and inspect recorded interactions:
+```python test="skip"
+from grpcvcr import recorded_channel
 
-```python
-from grpcvr import Cassette
+target = "localhost:50051"
 
-cassette = Cassette("test.yaml")
-
-for interaction in cassette.interactions:
-    print(f"Method: {interaction.request.method}")
-    print(f"RPC Type: {interaction.rpc_type}")
-    print(f"Status: {interaction.response.code}")
-```
-
-### JSON Format
-
-Use `.json` extension for JSON format:
-
-```python
 with recorded_channel("test.json", target) as channel:
     ...
 ```
 
+The format is determined by the file extension.
+
 ## Error Handling
 
-### Handling Missing Cassettes
+### Catching Recording Errors
 
-```python
-from grpcvr import Cassette, RecordMode
-from grpcvr.errors import CassetteNotFoundError
+```python test="skip"
+from grpcvcr import RecordMode, recorded_channel
+from grpcvcr.errors import RecordingDisabledError
 
-try:
-    cassette = Cassette("missing.yaml", record_mode=RecordMode.NONE)
-except CassetteNotFoundError as e:
-    print(f"Cassette not found: {e.path}")
-```
-
-### Handling Unmatched Requests
-
-```python
-from grpcvr import recorded_channel, RecordMode
-from grpcvr.errors import RecordingDisabledError
+target = "localhost:50051"
 
 try:
-    with recorded_channel("test.yaml", target, record_mode=RecordMode.NONE) as channel:
+    with recorded_channel(
+        "test.yaml", target, record_mode=RecordMode.NONE
+    ) as channel:
         stub = MyServiceStub(channel)
         # This will fail if not in cassette
         stub.GetUser(GetUserRequest(id=999))
@@ -160,30 +121,31 @@ except RecordingDisabledError as e:
     print(f"No recorded interaction for: {e.method}")
 ```
 
-## Secure Channels
+### Secure Channels
 
-Use credentials for TLS connections:
-
-```python
+```python test="skip"
 import grpc
-from grpcvr import recorded_channel
+
+from grpcvcr import recorded_channel
 
 credentials = grpc.ssl_channel_credentials()
 
 with recorded_channel(
     "test.yaml",
-    "myservice.example.com:443",
+    "api.example.com:443",
     credentials=credentials,
 ) as channel:
     stub = MyServiceStub(channel)
     response = stub.GetUser(GetUserRequest(id=1))
 ```
 
-## Channel Options
+### Channel Options
 
-Pass gRPC channel options:
+```python test="skip"
+from grpcvcr import recorded_channel
 
-```python
+target = "localhost:50051"
+
 with recorded_channel(
     "test.yaml",
     target,
@@ -195,13 +157,16 @@ with recorded_channel(
     ...
 ```
 
-## Testing Recorded Errors
+## Recording gRPC Errors
 
-grpcvr records and replays gRPC errors:
+gRPC errors are recorded and replayed:
 
-```python
+```python test="skip"
 import grpc
-from grpcvr import recorded_channel, RecordMode
+
+from grpcvcr import RecordMode, recorded_channel
+
+target = "localhost:50051"
 
 # Record an error response
 with recorded_channel("error_test.yaml", target) as channel:
@@ -212,36 +177,37 @@ with recorded_channel("error_test.yaml", target) as channel:
         assert e.code() == grpc.StatusCode.NOT_FOUND
 
 # Replay the error
-with recorded_channel("error_test.yaml", target, record_mode=RecordMode.NONE) as channel:
+with recorded_channel(
+    "error_test.yaml", target, record_mode=RecordMode.NONE
+) as channel:
     stub = MyServiceStub(channel)
     try:
         stub.GetUser(GetUserRequest(id=999))
     except grpc.RpcError as e:
         # Same error is replayed
         assert e.code() == grpc.StatusCode.NOT_FOUND
-        assert "not found" in e.details().lower()
 ```
 
-## Parallel Test Execution
+## Parallel Test Isolation
 
-Each test should use its own cassette file to avoid conflicts:
-
-```python
+```python test="skip"
 import pytest
-from grpcvr import Cassette, RecordingChannel
+
+from grpcvcr import Cassette, RecordingChannel
+
 
 @pytest.fixture
 def cassette_path(tmp_path, request):
     """Generate unique cassette path per test."""
     return tmp_path / f"{request.node.name}.yaml"
 
+
 def test_one(cassette_path, grpc_target):
     cassette = Cassette(cassette_path)
     ...
+
 
 def test_two(cassette_path, grpc_target):
     cassette = Cassette(cassette_path)
     ...
 ```
-
-The built-in `cassette` fixture from the pytest plugin already handles this automatically.

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from grpcvr.serialization import (
+from grpcvcr.serialization import (
     CassetteData,
     CassetteSerializer,
     Interaction,

@@ -29,10 +29,10 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run ruff format
-        run: uv run ruff format --check src/grpcvr tests
+        run: uv run ruff format --check src/grpcvcr tests
 
       - name: Run ruff check
-        run: uv run ruff check src/grpcvr tests
+        run: uv run ruff check src/grpcvcr tests
 
       - name: Run pyright
         run: uv run pyright
@@ -61,7 +61,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run tests with coverage
-        run: uv run pytest tests/ -v -p no:grpcvr --ignore=tests/test_examples.py --cov=src/grpcvr --cov-report=xml
+        run: uv run pytest tests/ -v -p no:grpcvcr --ignore=tests/test_examples.py --cov=src/grpcvcr --cov-report=xml
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

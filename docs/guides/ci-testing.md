@@ -1,34 +1,29 @@
-# CI/CD Testing Patterns
+# CI/CD Testing
 
-This guide covers best practices for using grpcvr in continuous integration environments.
-
-## Basic CI Setup
-
-The key principle: **record locally, playback in CI**.
-
-1. Run tests locally with `RecordMode.NEW_EPISODES` (default) to record interactions
-2. Commit cassette files to version control
-3. Run tests in CI with `RecordMode.NONE` to ensure all interactions are pre-recorded
+Best practices for using grpcvcr in continuous integration environments.
 
 ## Automatic CI Detection
 
-grpcvr's pytest plugin automatically switches to `RecordMode.NONE` when the `CI` environment variable is set:
+grpcvcr automatically detects CI environments and sets `RecordMode.NONE` by default. This ensures tests fail fast if cassettes are missing or outdated.
 
-```python
+```python test="skip"
+from grpcvcr import RecordingChannel
+
+
 # No special configuration needed - this just works in CI
 def test_get_user(cassette, grpc_target):
     channel = RecordingChannel(cassette, grpc_target)
     stub = MyServiceStub(channel.channel)
-    response = stub.GetUser(GetUserRequest(id=1))
+    stub.GetUser(GetUserRequest(id=1))
     channel.close()
 ```
 
-Most CI systems (GitHub Actions, GitLab CI, CircleCI, etc.) set `CI=true` automatically.
+CI is detected via the `CI` environment variable (set by GitHub Actions, GitLab CI, CircleCI, etc.).
 
 ## GitHub Actions Example
 
 ```yaml
-name: CI
+name: Tests
 
 on: [push, pull_request]
 
@@ -44,180 +39,170 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[test]"
 
       - name: Run tests
-        run: pytest
-        # CI=true is set automatically by GitHub Actions
-        # Tests will use RecordMode.NONE
+        run: pytest tests/ -v
 ```
 
-## Explicit Record Mode Override
+## Cassette Management
 
-Override the record mode via CLI for all tests:
+### Committing Cassettes
 
-```bash
-# Force playback only (fail if cassette missing)
-pytest --grpcvr-record=none
+Cassettes should be committed to version control:
 
-# Force recording (refresh all cassettes)
-pytest --grpcvr-record=all
-
-# Record new interactions only
-pytest --grpcvr-record=new_episodes
-```
-
-## Cassette Directory Configuration
-
-Configure the default cassette directory:
-
-```bash
-# Use custom cassette directory
-pytest --grpcvr-cassette-dir=fixtures/cassettes
-```
-
-Or in `pyproject.toml`:
-
-```toml
-[tool.pytest.ini_options]
-addopts = "--grpcvr-cassette-dir=tests/fixtures/cassettes"
-```
-
-## Handling Cassette Drift
-
-When your API changes, cassettes may become outdated. Strategies to handle this:
-
-### 1. Refresh All Cassettes
-
-```bash
-# Locally, with a running server
-pytest --grpcvr-record=all
-git add tests/cassettes/
-git commit -m "Refresh cassettes for API v2"
-```
-
-### 2. Refresh Specific Tests
-
-```bash
-# Re-record specific test cassettes
-pytest tests/test_users.py --grpcvr-record=all
-```
-
-### 3. Delete and Re-record
-
-```bash
-rm -rf tests/cassettes/
-pytest --grpcvr-record=new_episodes
-```
-
-## Failing Fast on Missing Cassettes
-
-In CI, you want tests to fail immediately if a cassette is missing rather than attempting to record:
-
-```python
-from grpcvr.errors import CassetteNotFoundError, RecordingDisabledError
-
-# These errors indicate missing or mismatched cassettes:
-# - CassetteNotFoundError: Cassette file doesn't exist
-# - RecordingDisabledError: No matching interaction in cassette
-```
-
-Both errors will cause test failures in CI, making it clear that cassettes need to be updated.
-
-## Cassette Versioning Strategy
-
-### Commit Cassettes to Git
-
-The recommended approach is to commit cassettes alongside your tests:
-
-```
+```text
 tests/
-├── cassettes/
-│   ├── test_get_user.yaml
-│   ├── test_list_users.yaml
-│   └── TestUserService/
-│       └── test_create_user.yaml
-├── test_users.py
-└── conftest.py
+  cassettes/
+    test_get_user.yaml
+    test_create_user.yaml
+    test_list_users.yaml
 ```
 
-Benefits:
-- Cassettes are versioned with code
-- PRs show cassette changes for review
-- Easy to see what API interactions tests depend on
+This ensures reproducible tests across environments.
 
-### .gitignore Considerations
+### Updating Cassettes
 
-Don't ignore cassettes:
-
-```gitignore
-# Don't add this!
-# tests/cassettes/
-```
-
-You may want to ignore temporary test cassettes:
-
-```gitignore
-# Ignore temp cassettes from local debugging
-tests/cassettes/tmp_*.yaml
-```
-
-## Parallel Test Execution
-
-grpcvr cassettes work with parallel test execution (pytest-xdist):
+When API responses change, re-record cassettes locally:
 
 ```bash
-pytest -n auto
+# Re-record all cassettes
+pytest tests/ --grpcvcr-record=all
+
+# Re-record specific tests
+pytest tests/test_users.py --grpcvcr-record=all
 ```
 
-Each test uses its own cassette file, so there are no conflicts. The pytest plugin generates unique cassette paths based on test names.
+Then commit the updated cassettes.
+
+### Cassette Naming
+
+The pytest plugin automatically names cassettes after tests:
+
+- `test_get_user` -> `tests/cassettes/test_get_user.yaml`
+- `test_users.py::TestUserAPI::test_create` -> `tests/cassettes/test_users/TestUserAPI/test_create.yaml`
 
 ## Debugging CI Failures
 
-When tests fail in CI due to cassette issues:
+### Common Errors
 
-### 1. Check for Missing Cassettes
+**CassetteNotFoundError**: The cassette file doesn't exist.
 
-```bash
-# List all cassette files
-find tests/cassettes -name "*.yaml" | sort
-
-# Compare with test files
-pytest --collect-only -q | grep "test_"
+```text
+grpcvcr.errors.CassetteNotFoundError: Cassette not found: tests/cassettes/test_new_feature.yaml
 ```
 
-### 2. Validate Cassette Contents
+Solution: Record the cassette locally and commit it.
 
-```python
-from grpcvr import Cassette
+**NoMatchingInteractionError**: No recorded interaction matches the request.
 
-cassette = Cassette("tests/cassettes/test_get_user.yaml")
-for i, interaction in enumerate(cassette.interactions):
-    print(f"{i}: {interaction.request.method} -> {interaction.response.code}")
+```text
+grpcvcr.errors.NoMatchingInteractionError: No matching interaction for method: /myservice.MyService/GetUser
 ```
 
-### 3. Re-record Locally
+Solution: The request has changed. Re-record the cassette.
 
-```bash
-# Delete the problematic cassette
-rm tests/cassettes/test_failing.yaml
+**RecordingDisabledError**: Attempted to record in CI.
 
-# Run the test to re-record
-pytest tests/test_module.py::test_failing -v
-
-# Verify and commit
-git diff tests/cassettes/
-git add tests/cassettes/test_failing.yaml
+```text
+grpcvcr.errors.RecordingDisabledError: Recording disabled for method: /myservice.MyService/NewEndpoint
 ```
 
-## Environment-Specific Cassettes
+Solution: Record the new interaction locally first.
 
-If you need different cassettes for different environments:
+### Inspecting Cassettes
 
-```python
+Cassettes are human-readable YAML/JSON:
+
+```yaml
+interactions:
+  - request:
+      method: /myservice.MyService/GetUser
+      body_base64: CAE=
+      metadata:
+        - ["authorization", "Bearer ***"]
+    response:
+      body_base64: CgVBbGljZQ==
+      code: OK
+      details: ""
+```
+
+### Force Recording in CI
+
+For special cases (like integration test suites), you can override:
+
+```yaml
+- name: Run integration tests
+  run: pytest tests/integration/ --grpcvcr-record=all
+  env:
+    GRPC_TARGET: ${{ secrets.STAGING_GRPC_TARGET }}
+```
+
+**Warning**: This makes tests non-deterministic. Use sparingly.
+
+## Best Practices
+
+### 1. Keep Cassettes Small
+
+Record only what's needed for each test. Avoid recording unnecessary metadata:
+
+```python test="skip"
+from grpcvcr import MetadataMatcher, recorded_channel
+
+target = "localhost:50051"
+
+# Ignore volatile metadata
+with recorded_channel(
+    "test.yaml",
+    target,
+    match_on=MetadataMatcher(ignore_keys=["x-request-id", "date"]),
+) as channel:
+    ...
+```
+
+### 2. Use Meaningful Test Names
+
+Since cassettes are named after tests, use descriptive names:
+
+```python test="skip"
+# Good
+def test_get_user_returns_not_found_for_invalid_id():
+    ...
+
+
+# Bad
+def test_1():
+    ...
+```
+
+### 3. Separate Recording and Playback Tests
+
+For complex scenarios, consider separate test files:
+
+```text
+tests/
+  test_users.py           # Normal tests (playback in CI)
+  test_users_record.py    # Recording tests (skip in CI)
+```
+
+### 4. Review Cassette Changes
+
+Treat cassette changes like code changes in PR reviews:
+
+- Are new fields being recorded?
+- Has response structure changed?
+- Are sensitive values properly filtered?
+
+### 5. Environment-Specific Cassettes
+
+For tests that differ by environment:
+
+```python test="skip"
 import os
-import pytest
 from pathlib import Path
+
+import pytest
+
 
 @pytest.fixture
 def cassette_path(request):
@@ -228,14 +213,15 @@ def cassette_path(request):
 
 ## Security Considerations
 
-Cassettes may contain sensitive data. Before committing:
+### Sensitive Data
 
-1. **Review cassettes** for secrets, tokens, or PII
-2. **Sanitize metadata** using `MetadataMatcher(ignore_keys=["authorization"])`
-3. **Use test credentials** that are safe to commit
-4. **Consider `.gitignore`** for cassettes with real credentials
+Never commit cassettes with real credentials. Filter sensitive metadata:
 
-```python
+```python test="skip"
+from grpcvcr import MetadataMatcher, recorded_channel
+
+target = "localhost:50051"
+
 # Use test-safe credentials during recording
 with recorded_channel(
     "test.yaml",
@@ -244,3 +230,17 @@ with recorded_channel(
 ) as channel:
     ...
 ```
+
+### Secrets in CI
+
+Use environment variables for real credentials:
+
+```yaml
+- name: Run tests
+  run: pytest tests/
+  env:
+    GRPC_TARGET: ${{ secrets.GRPC_TARGET }}
+    API_KEY: ${{ secrets.API_KEY }}
+```
+
+Cassettes will use recorded responses, not make real calls in CI.

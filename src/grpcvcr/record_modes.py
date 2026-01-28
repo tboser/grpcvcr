@@ -8,7 +8,7 @@ class RecordMode(Enum):
 
     Example:
         ```python
-        from grpcvr import Cassette, RecordMode
+        from grpcvcr import Cassette, RecordMode
 
         # Playback only - fails if interaction not found
         cassette = Cassette("test.yaml", record_mode=RecordMode.NONE)

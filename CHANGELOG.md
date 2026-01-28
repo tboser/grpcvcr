@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial release of grpcvr
+- Initial release of grpcvcr
 - Recording and playback of gRPC interactions via interceptors
 - Support for all RPC types: unary, server streaming, client streaming, bidirectional streaming
 - Async support with `AsyncRecordingChannel` for `grpc.aio`
@@ -17,9 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Matcher composition with `&` operator
 - Four record modes: `NONE`, `NEW_EPISODES`, `ALL`, `ONCE`
 - pytest plugin with automatic cassette management
-- CLI options: `--grpcvr-record`, `--grpcvr-cassette-dir`
+- CLI options: `--grpcvcr-record`, `--grpcvcr-cassette-dir`
 - Automatic `RecordMode.NONE` in CI environments
-- `@pytest.mark.grpcvr` marker for per-test configuration
+- `@pytest.mark.grpcvcr` marker for per-test configuration
 - Context managers: `recorded_channel`, `async_recorded_channel`, `use_cassette`
 - Full type annotations (PEP 561 compatible)
 - Documentation with MkDocs Material theme

@@ -15,7 +15,7 @@ Custom matchers are useful when:
 Use `CustomMatcher` with a function that takes two `InteractionRequest` objects:
 
 ```python
-from grpcvr import CustomMatcher
+from grpcvcr import CustomMatcher
 
 
 def ignore_timestamp(request, recorded_request):
@@ -52,7 +52,7 @@ def my_matcher(request, recorded_request):
 Combine custom matchers with built-in ones:
 
 ```python
-from grpcvr import CustomMatcher, MethodMatcher
+from grpcvcr import CustomMatcher, MethodMatcher
 
 
 def check_auth_header(request, recorded_request):
@@ -71,7 +71,7 @@ matcher = MethodMatcher() & CustomMatcher(check_auth_header)
 If your requests contain fields that change (like timestamps), you can deserialize and compare specific fields:
 
 ```python test="skip"
-from grpcvr import CustomMatcher, MethodMatcher
+from grpcvcr import CustomMatcher, MethodMatcher
 
 
 def match_user_id_only(request, recorded_request):
@@ -97,7 +97,7 @@ matcher = CustomMatcher(match_user_id_only)
 Match some metadata keys while ignoring others:
 
 ```python
-from grpcvr import CustomMatcher, MethodMatcher, RequestMatcher
+from grpcvcr import CustomMatcher, MethodMatcher, RequestMatcher
 
 IMPORTANT_HEADERS = ["authorization", "x-api-key"]
 

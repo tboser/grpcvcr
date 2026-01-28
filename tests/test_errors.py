@@ -1,6 +1,6 @@
 """Tests for error classes."""
 
-from grpcvr.errors import (
+from grpcvcr.errors import (
     CassetteNotFoundError,
     CassetteWriteError,
     GrpcvrError,
@@ -8,7 +8,7 @@ from grpcvr.errors import (
     RecordingDisabledError,
     SerializationError,
 )
-from grpcvr.serialization import Interaction, InteractionRequest, InteractionResponse
+from grpcvcr.serialization import Interaction, InteractionRequest, InteractionResponse
 
 
 class TestGrpcvrError:

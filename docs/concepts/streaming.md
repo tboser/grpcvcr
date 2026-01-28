@@ -1,6 +1,6 @@
 # Streaming RPCs
 
-grpcvr supports all four gRPC call types.
+grpcvcr supports all four gRPC call types.
 
 ## RPC Types
 
@@ -25,7 +25,7 @@ with recorded_channel("test.yaml", "localhost:50051") as channel:
         print(user.name)
 ```
 
-grpcvr records all streamed responses and replays them in order.
+grpcvcr records all streamed responses and replays them in order.
 
 ### Client Streaming (Multiple Requests, Single Response)
 
@@ -43,7 +43,7 @@ with recorded_channel("test.yaml", "localhost:50051") as channel:
     print(f"Created {response.count} users")
 ```
 
-grpcvr records all streamed requests (concatenated) and the final response.
+grpcvcr records all streamed requests (concatenated) and the final response.
 
 ### Bidirectional Streaming (Multiple Requests, Multiple Responses)
 
@@ -61,7 +61,7 @@ with recorded_channel("test.yaml", "localhost:50051") as channel:
         print(response.text)
 ```
 
-grpcvr records all request messages and all response messages.
+grpcvcr records all request messages and all response messages.
 
 ## Cassette Format for Streaming
 
@@ -87,7 +87,7 @@ interactions:
 For client streaming and bidirectional streaming, all request messages are concatenated for matching:
 
 ```python
-from grpcvr import MethodMatcher, RequestMatcher
+from grpcvcr import MethodMatcher, RequestMatcher
 
 # These will match if the concatenated request bodies are identical
 matcher = MethodMatcher() & RequestMatcher()

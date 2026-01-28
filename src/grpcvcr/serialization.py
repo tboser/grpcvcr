@@ -12,7 +12,7 @@ from typing import Any, Literal
 
 import yaml
 
-from grpcvr.errors import SerializationError
+from grpcvcr.errors import SerializationError
 
 
 def _get_importable_module_path(cls: type) -> str:

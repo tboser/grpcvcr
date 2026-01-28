@@ -8,18 +8,18 @@
 ## Install with pip
 
 ```bash test="skip"
-pip install grpcvr
+pip install grpcvcr
 ```
 
 ## Install with uv
 
 ```bash test="skip"
-uv add grpcvr
+uv add grpcvcr
 ```
 
 ## Development Installation
 
-To contribute to grpcvr or run the test suite:
+To contribute to grpcvcr or run the test suite:
 
 ```bash test="skip"
 git clone https://github.com/tboser/grpcvcr.git
@@ -36,7 +36,7 @@ This will:
 ## Verify Installation
 
 ```python
-import grpcvr
+import grpcvcr
 
-print(grpcvr.__version__)
+print(grpcvcr.__version__)
 ```

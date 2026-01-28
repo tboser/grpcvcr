@@ -144,6 +144,6 @@ cython_debug/
 Thumbs.db
 
 # Project specific
-src/grpcvr/_version.py
+src/grpcvcr/_version.py
 
 .claude/settings.local.json

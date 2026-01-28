@@ -1,6 +1,6 @@
 # API Reference
 
-This section provides detailed API documentation for all public classes and functions in grpcvr.
+This section provides detailed API documentation for all public classes and functions in grpcvcr.
 
 ## Core Components
 
@@ -14,9 +14,9 @@ This section provides detailed API documentation for all public classes and func
 
 | Class | Description |
 |-------|-------------|
-| [`Cassette`][grpcvr.Cassette] | Container for recorded interactions |
-| [`RecordingChannel`][grpcvr.RecordingChannel] | Sync recording channel |
-| [`recorded_channel`][grpcvr.recorded_channel] | Context manager for easy usage |
-| [`RecordMode`][grpcvr.RecordMode] | Recording behavior enum |
-| [`MethodMatcher`][grpcvr.MethodMatcher] | Match by RPC method name |
-| [`RequestMatcher`][grpcvr.RequestMatcher] | Match by request body |
+| [`Cassette`][grpcvcr.Cassette] | Container for recorded interactions |
+| [`RecordingChannel`][grpcvcr.RecordingChannel] | Sync recording channel |
+| [`recorded_channel`][grpcvcr.recorded_channel] | Context manager for easy usage |
+| [`RecordMode`][grpcvcr.RecordMode] | Recording behavior enum |
+| [`MethodMatcher`][grpcvcr.MethodMatcher] | Match by RPC method name |
+| [`RequestMatcher`][grpcvcr.RequestMatcher] | Match by request body |

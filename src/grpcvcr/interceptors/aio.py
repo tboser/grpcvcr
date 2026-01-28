@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING, Any
 import grpc
 from grpc import aio
 
-from grpcvr.errors import RecordingDisabledError
-from grpcvr.record_modes import RecordMode
-from grpcvr.serialization import (
+from grpcvcr.errors import RecordingDisabledError
+from grpcvcr.record_modes import RecordMode
+from grpcvcr.serialization import (
     Interaction,
     InteractionRequest,
     InteractionResponse,
@@ -18,7 +18,7 @@ from grpcvr.serialization import (
 )
 
 if TYPE_CHECKING:
-    from grpcvr.cassette import Cassette
+    from grpcvcr.cassette import Cassette
 
 
 class _AsyncFakeUnaryCall(aio.UnaryUnaryCall):  # type: ignore[misc]

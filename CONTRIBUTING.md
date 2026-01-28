@@ -1,4 +1,4 @@
-# Contributing to grpcvr
+# Contributing to grpcvcr
 
 ## Development Setup
 
@@ -11,8 +11,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/grpcvr.git
-cd grpcvr
+git clone https://github.com/yourusername/grpcvcr.git
+cd grpcvcr
 
 # Install dependencies and set up pre-commit hooks
 make install
@@ -73,8 +73,8 @@ make proto
 ## Project Structure
 
 ```
-grpcvr/
-├── src/grpcvr/           # Main library code
+grpcvcr/
+├── src/grpcvcr/           # Main library code
 │   ├── interceptors/     # gRPC interceptors (sync and async)
 │   ├── cassette.py       # Cassette management
 │   ├── channel.py        # Channel wrappers

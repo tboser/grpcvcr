@@ -1,0 +1,93 @@
+site_name: grpcvr
+site_description: Record and replay gRPC interactions for testing
+site_url: https://grpcvr.readthedocs.io
+
+repo_name: tboser/grpcvcr
+repo_url: https://github.com/tboser/grpcvcr
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.code.annotate
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.path
+    - search.highlight
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep-purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep-purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+nav:
+  - Home:
+      - Welcome: index.md
+      - Installation: installation.md
+      - Quick Start: quickstart.md
+  - Concepts:
+      - concepts/index.md
+      - Cassettes: concepts/cassettes.md
+      - Request Matching: concepts/matchers.md
+      - Record Modes: concepts/record-modes.md
+      - Streaming: concepts/streaming.md
+  - Guides:
+      - guides/index.md
+      - pytest Integration: guides/pytest.md
+      - Async Usage: guides/async.md
+      - Custom Matchers: guides/custom-matchers.md
+  - API Reference:
+      - api/index.md
+      - Cassette: api/cassette.md
+      - Channel: api/channel.md
+      - Matchers: api/matchers.md
+      - Record Modes: api/record-modes.md
+      - Errors: api/errors.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - src
+          options:
+            members_order: source
+            separate_signature: true
+            filters: ["!^_"]
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html

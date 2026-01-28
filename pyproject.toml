@@ -1,0 +1,158 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "grpcvr"
+description = "Record and replay gRPC interactions for testing"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Thomas" }]
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Framework :: Pytest",
+    "Typing :: Typed",
+]
+dynamic = ["version"]
+dependencies = [
+    "grpcio>=1.50.0",
+    "protobuf>=4.21.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "grpcio-tools>=1.50.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-examples>=0.0.14",
+    "ruff>=0.4.0",
+    "pyright>=1.1.350",
+    "pre-commit>=3.0.0",
+    "mypy>=1.8.0",
+    "types-protobuf>=4.21.0",
+    "types-pyyaml>=6.0",
+]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings-python>=1.8.0",
+    "griffe-typingdoc>=0.2.0",
+]
+
+[project.entry-points.pytest11]
+grpcvr = "grpcvr.pytest_plugin"
+
+[project.urls]
+Homepage = "https://github.com/tboser/grpcvcr"
+Documentation = "https://grpcvcr.readthedocs.io"
+Repository = "https://github.com/tboser/grpcvcr"
+Changelog = "https://github.com/tboser/grpcvcr/releases"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/grpcvr/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["/src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/grpcvr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
+filterwarnings = [
+    "error",
+    "ignore:There is no current event loop:DeprecationWarning",
+]
+norecursedirs = ["tests/generated"]
+
+[tool.coverage.run]
+source = ["src/grpcvr"]
+branch = true
+parallel = true
+relative_files = true
+omit = [
+    "src/grpcvr/_version.py",
+    "src/grpcvr/pytest_plugin.py",
+]
+
+[tool.coverage.paths]
+source = ["src/grpcvr"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+fail_under = 100
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = ["tests/generated", "src/grpcvr/_version.py"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+    "SIM",
+    "PTH",
+    "RUF",
+]
+ignore = [
+    "E501",
+    "B008",
+    "SIM108",
+    "SIM110",
+    "RUF022",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["grpcvr"]
+
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+include = ["src/grpcvr", "tests"]
+reportMissingTypeStubs = false
+reportIncompatibleMethodOverride = false
+reportArgumentType = false
+reportAbstractUsage = false
+reportAttributeAccessIssue = false
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true

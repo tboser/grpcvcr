@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package test;
+
+// A simple test service for grpcvr unit tests
+service TestService {
+  // Unary RPC
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+
+  // Server streaming RPC
+  rpc ListUsers(ListUsersRequest) returns (stream User);
+
+  // Client streaming RPC
+  rpc CreateUsers(stream CreateUserRequest) returns (CreateUsersResponse);
+
+  // Bidirectional streaming RPC
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message ListUsersRequest {
+  int32 limit = 1;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message CreateUsersResponse {
+  int32 created_count = 1;
+  repeated int32 ids = 2;
+}
+
+message ChatMessage {
+  string sender = 1;
+  string content = 2;
+  int64 timestamp = 3;
+}

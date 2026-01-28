@@ -14,7 +14,6 @@ grpcvcr is a testing library that records your gRPC client interactions and repl
 ## Quick Example
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 from myservice_pb2 import GetUserRequest
@@ -39,7 +38,6 @@ with recorded_channel("tests/cassettes/user_test.yaml", "localhost:50051") as ch
 ## Installation
 
 ```bash
-# test: skip
 pip install grpcvcr
 ```
 

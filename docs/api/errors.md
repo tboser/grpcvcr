@@ -7,7 +7,6 @@ Exception classes raised by grpcvcr.
 All grpcvcr exceptions inherit from `GrpcvcrError`, making it easy to catch any grpcvcr-specific error.
 
 ```python
-# test: skip
 from grpcvcr import (
     CassetteNotFoundError,
     GrpcvcrError,

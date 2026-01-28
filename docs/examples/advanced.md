@@ -7,7 +7,6 @@ Advanced usage patterns and techniques for grpcvcr.
 ### Method-Only Matching
 
 ```python
-# test: skip
 from grpcvcr import MethodMatcher, recorded_channel
 
 target = "localhost:50051"
@@ -25,7 +24,6 @@ with recorded_channel(
 ### Metadata Matching
 
 ```python
-# test: skip
 from grpcvcr import MetadataMatcher, recorded_channel
 
 target = "localhost:50051"
@@ -57,7 +55,6 @@ matcher = MethodMatcher() & MetadataMatcher(keys=["authorization"])
 ### Custom Match Functions
 
 ```python
-# test: skip
 from grpcvcr import CustomMatcher, MethodMatcher
 from grpcvcr.serialization import InteractionRequest
 
@@ -93,7 +90,6 @@ interactions:
 ### JSON
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 target = "localhost:50051"
@@ -109,7 +105,6 @@ The format is determined by the file extension.
 ### Catching Recording Errors
 
 ```python
-# test: skip
 from grpcvcr import RecordMode, recorded_channel
 from grpcvcr.errors import RecordingDisabledError
 
@@ -129,7 +124,6 @@ except RecordingDisabledError as e:
 ### Secure Channels
 
 ```python
-# test: skip
 import grpc
 
 from grpcvcr import recorded_channel
@@ -148,7 +142,6 @@ with recorded_channel(
 ### Channel Options
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 target = "localhost:50051"
@@ -169,7 +162,6 @@ with recorded_channel(
 gRPC errors are recorded and replayed:
 
 ```python
-# test: skip
 import grpc
 
 from grpcvcr import RecordMode, recorded_channel
@@ -199,7 +191,6 @@ with recorded_channel(
 ## Parallel Test Isolation
 
 ```python
-# test: skip
 import pytest
 
 from grpcvcr import Cassette, RecordingChannel

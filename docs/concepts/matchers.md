@@ -7,7 +7,6 @@ Matchers determine how grpcvcr finds the right recorded response for each reques
 By default, grpcvcr matches requests by method name only:
 
 ```python
-# test: skip
 from grpcvcr import Cassette
 
 # Uses MethodMatcher by default
@@ -90,7 +89,6 @@ matcher = CustomMatcher(my_matcher)
 Pass matchers when creating a cassette:
 
 ```python
-# test: skip
 from grpcvcr import Cassette, MethodMatcher, RequestMatcher
 
 matcher = MethodMatcher() & RequestMatcher()

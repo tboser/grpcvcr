@@ -5,7 +5,6 @@ Common patterns for using grpcvcr in your projects.
 ## Recording and Playback
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 # First run: records interactions to cassette
@@ -18,7 +17,6 @@ with recorded_channel("tests/cassettes/my_test.yaml", "localhost:50051") as chan
 ## Record Modes
 
 ```python
-# test: skip
 from grpcvcr import RecordMode, recorded_channel
 
 target = "localhost:50051"
@@ -41,7 +39,6 @@ with recorded_channel("test.yaml", target, record_mode=RecordMode.ALL) as channe
 ## Manual Channel Management
 
 ```python
-# test: skip
 from grpcvcr import Cassette, RecordingChannel
 
 cassette = Cassette("tests/cassettes/test.yaml")
@@ -56,7 +53,6 @@ channel.close()  # Saves the cassette
 ## pytest Integration
 
 ```python
-# test: skip
 import pytest
 
 from grpcvcr import RecordingChannel
@@ -76,7 +72,6 @@ def test_get_user(cassette, grpc_target):
 Custom cassette configuration:
 
 ```python
-# test: skip
 from grpcvcr import RecordMode
 
 
@@ -88,7 +83,6 @@ def test_with_custom_cassette(cassette, grpc_target):
 ## Async Support
 
 ```python
-# test: skip
 import asyncio
 
 from grpcvcr import Cassette
@@ -112,7 +106,6 @@ asyncio.run(main())
 ### Server Streaming
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 target = "localhost:50051"
@@ -127,7 +120,6 @@ with recorded_channel("test.yaml", target) as channel:
 ### Client Streaming
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 target = "localhost:50051"
@@ -147,7 +139,6 @@ with recorded_channel("test.yaml", target) as channel:
 ### Bidirectional Streaming
 
 ```python
-# test: skip
 from grpcvcr import recorded_channel
 
 target = "localhost:50051"

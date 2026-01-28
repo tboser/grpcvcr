@@ -4,13 +4,13 @@ Exception classes raised by grpcvcr.
 
 ## Overview
 
-All grpcvcr exceptions inherit from `GrpcvrError`, making it easy to catch any grpcvcr-specific error.
+All grpcvcr exceptions inherit from `GrpcvcrError`, making it easy to catch any grpcvcr-specific error.
 
 ```python
 # test: skip
 from grpcvcr import (
     CassetteNotFoundError,
-    GrpcvrError,
+    GrpcvcrError,
     RecordingDisabledError,
     RecordMode,
     recorded_channel,
@@ -25,13 +25,13 @@ except CassetteNotFoundError:
     print("Cassette file not found")
 except RecordingDisabledError:
     print("No matching interaction and recording is disabled")
-except GrpcvrError:
+except GrpcvcrError:
     print("Some other grpcvcr error")
 ```
 
 ## API Reference
 
-::: grpcvcr.GrpcvrError
+::: grpcvcr.GrpcvcrError
 
 ::: grpcvcr.CassetteNotFoundError
 

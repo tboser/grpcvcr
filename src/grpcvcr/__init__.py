@@ -32,7 +32,7 @@ from grpcvcr.channel import (
 from grpcvcr.errors import (
     CassetteNotFoundError,
     CassetteWriteError,
-    GrpcvrError,
+    GrpcvcrError,
     NoMatchingInteractionError,
     RecordingDisabledError,
     SerializationError,
@@ -55,7 +55,7 @@ __all__ = [
     "CassetteNotFoundError",
     "CassetteWriteError",
     "CustomMatcher",
-    "GrpcvrError",
+    "GrpcvcrError",
     "Matcher",
     "MetadataMatcher",
     "MethodMatcher",

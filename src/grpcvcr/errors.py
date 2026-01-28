@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from grpcvcr.serialization import Interaction
 
 
-class GrpcvrError(Exception):
+class GrpcvcrError(Exception):
     """Base exception for all grpcvcr errors.
 
     All grpcvcr exceptions inherit from this class, making it easy to
@@ -20,13 +20,13 @@ class GrpcvrError(Exception):
             with recorded_channel("test.yaml", "localhost:50051") as channel:
                 stub = MyServiceStub(channel)
                 response = stub.GetUser(request)
-        except GrpcvrError as e:
+        except GrpcvcrError as e:
             print(f"grpcvcr error: {e}")
         ```
     """
 
 
-class CassetteNotFoundError(GrpcvrError):
+class CassetteNotFoundError(GrpcvcrError):
     """Raised when a cassette file cannot be found.
 
     This occurs when using `RecordMode.NONE` or `RecordMode.ONCE` (after
@@ -39,7 +39,7 @@ class CassetteNotFoundError(GrpcvrError):
         super().__init__(f"Cassette not found: {path}")
 
 
-class NoMatchingInteractionError(GrpcvrError):
+class NoMatchingInteractionError(GrpcvcrError):
     """Raised when no recorded interaction matches the request.
 
     This typically means the test is making a new RPC call that wasn't
@@ -65,7 +65,7 @@ class NoMatchingInteractionError(GrpcvrError):
         super().__init__(f"No matching interaction for {method}. Available: {available_methods}")
 
 
-class RecordingDisabledError(GrpcvrError):
+class RecordingDisabledError(GrpcvcrError):
     """Raised when recording is attempted but disabled.
 
     This occurs in `RecordMode.NONE` when a request is made that doesn't
@@ -78,7 +78,7 @@ class RecordingDisabledError(GrpcvrError):
         super().__init__(f"Recording disabled but no matching interaction for: {method}")
 
 
-class CassetteWriteError(GrpcvrError):
+class CassetteWriteError(GrpcvcrError):
     """Raised when a cassette cannot be written to disk.
 
     This can occur due to permission issues, disk full, or other I/O errors.
@@ -93,7 +93,7 @@ class CassetteWriteError(GrpcvrError):
         super().__init__(f"Failed to write cassette {path}: {cause}")
 
 
-class SerializationError(GrpcvrError):
+class SerializationError(GrpcvcrError):
     """Raised when request/response serialization fails.
 
     This can occur when parsing a malformed cassette file or when

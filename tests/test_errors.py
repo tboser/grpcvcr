@@ -3,7 +3,7 @@
 from grpcvcr.errors import (
     CassetteNotFoundError,
     CassetteWriteError,
-    GrpcvrError,
+    GrpcvcrError,
     NoMatchingInteractionError,
     RecordingDisabledError,
     SerializationError,
@@ -11,9 +11,9 @@ from grpcvcr.errors import (
 from grpcvcr.serialization import Interaction, InteractionRequest, InteractionResponse
 
 
-class TestGrpcvrError:
+class TestGrpcvcrError:
     def test_base_exception(self) -> None:
-        err = GrpcvrError("test message")
+        err = GrpcvcrError("test message")
         assert str(err) == "test message"
         assert isinstance(err, Exception)
 

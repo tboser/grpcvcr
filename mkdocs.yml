@@ -52,6 +52,10 @@ nav:
       - pytest Integration: guides/pytest.md
       - Async Usage: guides/async.md
       - Custom Matchers: guides/custom-matchers.md
+      - CI/CD Testing: guides/ci-testing.md
+  - Examples:
+      - Basic Usage: examples/basic.md
+      - Advanced Patterns: examples/advanced.md
   - API Reference:
       - api/index.md
       - Cassette: api/cassette.md

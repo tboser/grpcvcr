@@ -7,13 +7,15 @@
 
 ## Install with pip
 
-```bash test="skip"
+```bash
+# test: skip
 pip install grpcvcr
 ```
 
 ## Install with uv
 
-```bash test="skip"
+```bash
+# test: skip
 uv add grpcvcr
 ```
 
@@ -21,7 +23,8 @@ uv add grpcvcr
 
 To contribute to grpcvcr or run the test suite:
 
-```bash test="skip"
+```bash
+# test: skip
 git clone https://github.com/tboser/grpcvcr.git
 cd grpcvcr
 make install

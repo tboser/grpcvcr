@@ -6,7 +6,8 @@ Best practices for using grpcvcr in continuous integration environments.
 
 grpcvcr automatically detects CI environments and sets `RecordMode.NONE` by default. This ensures tests fail fast if cassettes are missing or outdated.
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import RecordingChannel
 
 
@@ -146,7 +147,8 @@ For special cases (like integration test suites), you can override:
 
 Record only what's needed for each test. Avoid recording unnecessary metadata:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import MetadataMatcher, recorded_channel
 
 target = "localhost:50051"
@@ -164,7 +166,8 @@ with recorded_channel(
 
 Since cassettes are named after tests, use descriptive names:
 
-```python test="skip"
+```python
+# test: skip
 # Good
 def test_get_user_returns_not_found_for_invalid_id():
     ...
@@ -197,7 +200,8 @@ Treat cassette changes like code changes in PR reviews:
 
 For tests that differ by environment:
 
-```python test="skip"
+```python
+# test: skip
 import os
 from pathlib import Path
 
@@ -217,7 +221,8 @@ def cassette_path(request):
 
 Never commit cassettes with real credentials. Filter sensitive metadata:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import MetadataMatcher, recorded_channel
 
 target = "localhost:50051"

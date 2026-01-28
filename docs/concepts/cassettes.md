@@ -10,7 +10,8 @@ A cassette is a file (YAML or JSON) containing recorded gRPC request/response pa
 
 Cassettes are stored as YAML by default:
 
-```yaml test="skip"
+```yaml
+# test: skip
 interactions:
   - request:
       method: /myservice.UserService/GetUser
@@ -31,7 +32,8 @@ interactions:
 
 By default, cassettes are stored in `tests/cassettes/`. You can customize this:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import Cassette
 
 # Explicit path
@@ -43,7 +45,8 @@ cassette = Cassette("path/to/my_cassette.json")
 
 With pytest:
 
-```bash test="skip"
+```bash
+# test: skip
 # Override cassette directory
 pytest --grpcvcr-cassette-dir=my_cassettes/
 ```
@@ -54,7 +57,8 @@ pytest --grpcvcr-cassette-dir=my_cassettes/
 
 To re-record all interactions:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import Cassette, RecordMode
 
 cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
@@ -62,7 +66,8 @@ cassette = Cassette("test.yaml", record_mode=RecordMode.ALL)
 
 Or via CLI:
 
-```bash test="skip"
+```bash
+# test: skip
 pytest --grpcvcr-record=all
 ```
 
@@ -78,7 +83,8 @@ Cassettes should be committed to version control. This allows:
 
 Delete cassette files to force re-recording:
 
-```bash test="skip"
+```bash
+# test: skip
 rm tests/cassettes/*.yaml
 pytest  # Re-records all cassettes
 ```

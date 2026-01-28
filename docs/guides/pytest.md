@@ -12,7 +12,8 @@ The plugin is automatically registered when you install grpcvcr. No additional c
 
 Provides a `Cassette` instance for the test. By default, the cassette is named after the test function.
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import RecordingChannel
 
 
@@ -36,7 +37,8 @@ Returns the current record mode, considering CLI overrides and markers.
 
 Factory for creating recording channels.
 
-```python test="skip"
+```python
+# test: skip
 def test_with_factory(grpcvcr_cassette, grpcvcr_channel_factory):
     with grpcvcr_channel_factory(grpcvcr_cassette, "localhost:50051") as recording:
         stub = UserServiceStub(recording.channel)
@@ -47,7 +49,8 @@ def test_with_factory(grpcvcr_cassette, grpcvcr_channel_factory):
 
 Use `@pytest.mark.grpcvcr` to customize cassette behavior:
 
-```python test="skip"
+```python
+# test: skip
 import pytest
 
 from grpcvcr import MethodMatcher, RecordMode, RequestMatcher
@@ -86,7 +89,8 @@ def test_full_configuration(grpcvcr_cassette):
 
 Override record mode for all tests:
 
-```bash test="skip"
+```bash
+# test: skip
 # Force re-record all cassettes
 pytest --grpcvcr-record=all
 
@@ -101,13 +105,15 @@ pytest --grpcvcr-record=new_episodes
 
 Override the cassette directory:
 
-```bash test="skip"
+```bash
+# test: skip
 pytest --grpcvcr-cassette-dir=my_cassettes/
 ```
 
 ## Example Test File
 
-```python test="skip"
+```python
+# test: skip
 import pytest
 
 from grpcvcr import MethodMatcher, RecordingChannel, RecordMode, RequestMatcher

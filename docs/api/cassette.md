@@ -6,7 +6,8 @@ The `Cassette` class is the core container for recording and replaying gRPC inte
 
 A cassette stores a collection of recorded gRPC interactions (request/response pairs) and provides methods to find matching interactions during playback.
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import Cassette, RecordMode, RecordingChannel
 
 # Create a cassette for recording

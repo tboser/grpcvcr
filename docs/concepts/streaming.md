@@ -8,7 +8,8 @@ grpcvcr supports all four gRPC call types.
 
 The simplest RPC type. One request, one response.
 
-```python test="skip"
+```python
+# test: skip
 with recorded_channel("test.yaml", "localhost:50051") as channel:
     stub = UserServiceStub(channel)
     response = stub.GetUser(GetUserRequest(id=1))
@@ -18,7 +19,8 @@ with recorded_channel("test.yaml", "localhost:50051") as channel:
 
 Client sends one request, server streams multiple responses.
 
-```python test="skip"
+```python
+# test: skip
 with recorded_channel("test.yaml", "localhost:50051") as channel:
     stub = UserServiceStub(channel)
     for user in stub.ListUsers(ListUsersRequest(limit=10)):
@@ -31,7 +33,8 @@ grpcvcr records all streamed responses and replays them in order.
 
 Client streams multiple requests, server sends one response.
 
-```python test="skip"
+```python
+# test: skip
 def request_iterator():
     for name in ["Alice", "Bob", "Charlie"]:
         yield CreateUserRequest(name=name)
@@ -49,7 +52,8 @@ grpcvcr records all streamed requests (concatenated) and the final response.
 
 Both client and server stream messages.
 
-```python test="skip"
+```python
+# test: skip
 def chat_messages():
     yield ChatMessage(text="Hello")
     yield ChatMessage(text="How are you?")
@@ -67,7 +71,8 @@ grpcvcr records all request messages and all response messages.
 
 Streaming interactions store multiple messages:
 
-```yaml test="skip"
+```yaml
+# test: skip
 interactions:
   - request:
       method: /myservice.UserService/ListUsers

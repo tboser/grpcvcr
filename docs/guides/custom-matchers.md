@@ -30,7 +30,8 @@ matcher = CustomMatcher(ignore_timestamp)
 
 The `InteractionRequest` object provides access to:
 
-```python test="skip"
+```python
+# test: skip
 def my_matcher(request, recorded_request):
     # Method name (e.g., "/package.Service/Method")
     request.method
@@ -70,7 +71,8 @@ matcher = MethodMatcher() & CustomMatcher(check_auth_header)
 
 If your requests contain fields that change (like timestamps), you can deserialize and compare specific fields:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import CustomMatcher, MethodMatcher
 
 

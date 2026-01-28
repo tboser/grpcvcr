@@ -6,7 +6,8 @@ This guide will get you up and running with grpcvcr in minutes.
 
 The simplest way to use grpcvcr is with the `recorded_channel` context manager:
 
-```python test="skip"
+```python
+# test: skip
 from grpcvcr import recorded_channel
 
 from myservice_pb2 import GetUserRequest
@@ -38,7 +39,8 @@ print(RecordMode.ONCE)  # Record once if cassette empty
 
 grpcvcr includes a pytest plugin with helpful fixtures:
 
-```python test="skip"
+```python
+# test: skip
 import pytest
 from grpcvcr import RecordingChannel
 
@@ -56,7 +58,8 @@ def test_get_user(grpcvcr_cassette):
 
 Use markers for custom configuration:
 
-```python test="skip"
+```python
+# test: skip
 import pytest
 from grpcvcr import MethodMatcher, RecordMode, RequestMatcher
 

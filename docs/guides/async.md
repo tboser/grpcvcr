@@ -6,7 +6,8 @@ grpcvcr fully supports async gRPC with `grpc.aio`.
 
 Use `AsyncRecordingChannel` for async gRPC clients:
 
-```python test="skip"
+```python
+# test: skip
 import asyncio
 
 from grpcvcr import Cassette, RecordMode
@@ -31,7 +32,8 @@ All streaming patterns work with async:
 
 ### Server Streaming
 
-```python test="skip"
+```python
+# test: skip
 async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
     stub = UserServiceStub(recording.channel)
     async for user in stub.ListUsers(ListUsersRequest(limit=10)):
@@ -40,7 +42,8 @@ async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
 
 ### Client Streaming
 
-```python test="skip"
+```python
+# test: skip
 async def request_iterator():
     for name in ["Alice", "Bob"]:
         yield CreateUserRequest(name=name)
@@ -53,7 +56,8 @@ async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
 
 ### Bidirectional Streaming
 
-```python test="skip"
+```python
+# test: skip
 async def chat_messages():
     yield ChatMessage(text="Hello")
     yield ChatMessage(text="World")
@@ -69,7 +73,8 @@ async with AsyncRecordingChannel(cassette, "localhost:50051") as recording:
 
 Use with pytest-asyncio for async tests:
 
-```python test="skip"
+```python
+# test: skip
 import pytest
 
 from grpcvcr.channel import AsyncRecordingChannel
@@ -87,7 +92,8 @@ async def test_async_get_user(grpcvcr_cassette):
 
 Use the provided fixture for async channels:
 
-```python test="skip"
+```python
+# test: skip
 @pytest.mark.asyncio
 async def test_with_factory(grpcvcr_cassette, grpcvcr_async_channel_factory):
     async with grpcvcr_async_channel_factory(

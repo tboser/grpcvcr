@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml/badge.svg)](https://github.com/tboser/grpcvcr/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/tboser/grpcvcr/graph/badge.svg)](https://codecov.io/gh/tboser/grpcvcr)
+[![Documentation](https://readthedocs.org/projects/grpcvcr/badge/?version=latest)](https://grpcvcr.readthedocs.io)
 [![PyPI version](https://img.shields.io/pypi/v/grpcvcr.svg)](https://pypi.org/project/grpcvcr/)
 [![Python versions](https://img.shields.io/pypi/pyversions/grpcvcr.svg)](https://pypi.org/project/grpcvcr/)
 

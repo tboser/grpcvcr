@@ -64,7 +64,7 @@ jobs:
         run: uv run pytest tests/ -v -p no:grpcvcr --cov=src/grpcvcr --cov-branch --cov-report=xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: matrix.python-version == '3.12'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

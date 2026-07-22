@@ -41,6 +41,24 @@ class TestAsyncUnaryRecordingPlayback:
         assert grpc_servicer.call_count == 1
         assert tmp_cassette_path.exists()
         assert len(cassette.interactions) == 1
+        assert cassette.target == grpc_target
+        assert cassette.interactions[0].request.target == grpc_target
+
+    async def test_preseeded_cassette_target_takes_precedence(
+        self,
+        grpc_target: str,
+        tmp_cassette_path: Path,
+        grpc_servicer,
+        pb2,
+        pb2_grpc,
+    ) -> None:
+        """An explicitly pre-seeded cassette target is not overwritten by the channel's target."""
+        cassette = Cassette(tmp_cassette_path, record_mode=RecordMode.ALL, target="preseeded-target")
+        async with AsyncRecordingChannel(cassette, grpc_target) as recording:
+            stub = pb2_grpc.TestServiceStub(recording.channel)
+            await stub.GetUser(pb2.GetUserRequest(id=42))
+
+        assert cassette.target == "preseeded-target"
 
     async def test_playback_unary_call(
         self,
@@ -60,6 +78,7 @@ class TestAsyncUnaryRecordingPlayback:
 
         grpc_servicer.call_count = 0
         cassette2 = Cassette(tmp_cassette_path, record_mode=RecordMode.NONE)
+        assert cassette2.interactions[0].request.target == grpc_target
         async with AsyncRecordingChannel(cassette2, grpc_target) as recording:
             stub = pb2_grpc.TestServiceStub(recording.channel)
             response = await stub.GetUser(pb2.GetUserRequest(id=42))

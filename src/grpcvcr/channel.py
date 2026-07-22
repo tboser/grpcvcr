@@ -56,6 +56,9 @@ class RecordingChannel:
         self.target = target
         """The gRPC server address."""
 
+        if not self.cassette.target:
+            self.cassette.target = target
+
         interceptors = create_interceptors(cassette)
 
         if credentials:
@@ -117,6 +120,9 @@ class AsyncRecordingChannel:
 
         self.target = target
         """The gRPC server address."""
+
+        if not self.cassette.target:
+            self.cassette.target = target
 
         interceptors = create_async_interceptors(cassette)
 

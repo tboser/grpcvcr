@@ -164,7 +164,7 @@ class AsyncRecordingUnaryUnaryInterceptor(aio.UnaryUnaryClientInterceptor):  # t
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -237,7 +237,7 @@ class AsyncRecordingUnaryStreamInterceptor(aio.UnaryStreamClientInterceptor):  #
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -324,7 +324,7 @@ class AsyncRecordingStreamUnaryInterceptor(aio.StreamUnaryClientInterceptor):  #
         requests = [r async for r in request_iterator]
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -407,7 +407,7 @@ class AsyncRecordingStreamStreamInterceptor(aio.StreamStreamClientInterceptor): 
         requests = [r async for r in request_iterator]
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)

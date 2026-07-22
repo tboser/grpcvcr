@@ -40,7 +40,7 @@ class RecordingUnaryUnaryInterceptor(grpc.UnaryUnaryClientInterceptor):  # type:
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -104,7 +104,7 @@ class RecordingUnaryStreamInterceptor(grpc.UnaryStreamClientInterceptor):  # typ
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -174,7 +174,7 @@ class RecordingStreamUnaryInterceptor(grpc.StreamUnaryClientInterceptor):  # typ
         requests = list(request_iterator)
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -243,7 +243,7 @@ class RecordingStreamStreamInterceptor(grpc.StreamStreamClientInterceptor):  # t
         requests = list(request_iterator)
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)

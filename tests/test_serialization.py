@@ -42,6 +42,21 @@ class TestInteractionRequest:
         )
         assert req.get_body_bytes() == b"hello world"
 
+    def test_from_grpc_default_target_is_none(self) -> None:
+        req = InteractionRequest.from_grpc(
+            method="/test.Service/Method",
+            body=b"hello",
+        )
+        assert req.target is None
+
+    def test_from_grpc_with_target(self) -> None:
+        req = InteractionRequest.from_grpc(
+            method="/test.Service/Method",
+            body=b"hello",
+            target="localhost:50051",
+        )
+        assert req.target == "localhost:50051"
+
 
 class TestInteractionResponse:
     def test_from_grpc_success(self) -> None:
@@ -100,6 +115,29 @@ class TestInteraction:
 
         assert restored.rpc_type == "server_streaming"
         assert isinstance(restored.response, StreamingInteractionResponse)
+
+    def test_to_dict_and_from_dict_preserves_target(self) -> None:
+        interaction = Interaction(
+            request=InteractionRequest.from_grpc("/test/Method", b"req", target="localhost:50051"),
+            response=InteractionResponse.from_grpc(b"resp", "OK"),
+            rpc_type="unary",
+        )
+
+        data = interaction.to_dict()
+        restored = Interaction.from_dict(data)
+
+        assert restored.request.target == "localhost:50051"
+
+    def test_from_dict_legacy_request_without_target(self) -> None:
+        data = {
+            "request": {"method": "/test/Method", "body": "aGVsbG8=", "metadata": {}},
+            "response": {"body": "cmVzcA==", "code": "OK"},
+            "rpc_type": "unary",
+        }
+
+        restored = Interaction.from_dict(data)
+
+        assert restored.request.target is None
 
 
 class TestCassetteSerializer:

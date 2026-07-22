@@ -44,6 +44,7 @@ from grpcvcr.matchers import (
     MetadataMatcher,
     MethodMatcher,
     RequestMatcher,
+    TargetMatcher,
 )
 from grpcvcr.record_modes import RecordMode
 
@@ -65,6 +66,7 @@ __all__ = [
     "RecordMode",
     "RequestMatcher",
     "SerializationError",
+    "TargetMatcher",
     "async_recorded_channel",
     "recorded_channel",
     "use_cassette",

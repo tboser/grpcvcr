@@ -18,6 +18,7 @@ interactions:
       metadata:
         authorization:
           - "Bearer token123"
+      target: "localhost:50051"
     response:
       body: "base64-encoded-protobuf"
       code: OK
@@ -26,6 +27,8 @@ interactions:
     rpc_type: unary
     recorded_at: "2024-01-15T10:30:00Z"
 ```
+
+The `target` field records the gRPC server address (e.g. `localhost:50051`) the interaction was recorded against. It's set automatically from the `target` passed to `RecordingChannel`/`AsyncRecordingChannel`, and is useful when a project records interactions against multiple hosts (e.g. different providers) and needs to tell which one a given cassette entry came from. It's optional — cassettes recorded before this field existed simply omit it, and it has no effect on default request matching.
 
 ## Cassette Location
 

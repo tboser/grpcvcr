@@ -96,11 +96,16 @@ def normalize_method(method: str | bytes) -> str:
     return method.decode("utf-8") if isinstance(method, bytes) else method
 
 
-class ReplayedRpcError(grpc.RpcError, grpc.Call):  # type: ignore[misc]
-    """The error a recorded failure is replayed as.
+class _RecordedRpcError(grpc.RpcError, grpc.Call):  # type: ignore[misc]
+    """The error a recorded failure surfaces as on the sync path.
 
     gRPC raises an object that is both the error and the call, so callers reach the
-    status through `code()` and `details()` on the exception itself.
+    status through `code()` and `details()` on the exception itself. Its own version
+    of this, `_InactiveRpcError`, is private, hence the stand-in; the async path has
+    `aio.AioRpcError` and uses that instead.
+
+    Deliberately not exported: the two paths raise different types, so callers catch
+    `grpc.RpcError`, which covers both.
     """
 
     def __init__(
@@ -206,8 +211,8 @@ class _FakeUnaryCall(grpc.Call, grpc.Future):  # type: ignore[misc]
             return self._error()
         return None
 
-    def _error(self) -> ReplayedRpcError:
-        return ReplayedRpcError(self._code, self._details, self._trailing_metadata)
+    def _error(self) -> _RecordedRpcError:
+        return _RecordedRpcError(self._code, self._details, self._trailing_metadata)
 
     def traceback(self, timeout: float | None = None) -> Any:
         return None
@@ -253,7 +258,7 @@ class _FakeStreamingCall(grpc.Call):  # type: ignore[misc]
     def __next__(self) -> object:
         if self._index >= len(self._messages):
             if self._code != grpc.StatusCode.OK:
-                raise ReplayedRpcError(self._code, self._details, self._trailing_metadata)
+                raise _RecordedRpcError(self._code, self._details, self._trailing_metadata)
             raise StopIteration
         msg = self._messages[self._index]
         self._index += 1

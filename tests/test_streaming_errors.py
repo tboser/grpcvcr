@@ -13,7 +13,7 @@ import grpc
 import pytest
 
 from grpcvcr import AsyncRecordingChannel, Cassette, RecordingChannel, RecordMode
-from grpcvcr.interceptors._base import ReplayedRpcError
+from grpcvcr.interceptors._base import _RecordedRpcError
 from tests.conftest import FAIL_ID, FAIL_NAME
 from tests.test_interceptor_paths import chat_messages
 from tests.test_interceptor_paths_async import chat_messages as async_chat_messages
@@ -134,11 +134,11 @@ class TestAsyncStreamingErrorsPropagate:
         assert status_of(excinfo) == (grpc.StatusCode.INVALID_ARGUMENT, "bad message")
 
 
-class TestReplayedRpcError:
-    """The error object a replayed failure raises, which gRPC treats as the call."""
+class TestRecordedRpcError:
+    """The error object a recorded failure raises, which gRPC treats as the call."""
 
-    def error(self) -> ReplayedRpcError:
-        return ReplayedRpcError(
+    def error(self) -> _RecordedRpcError:
+        return _RecordedRpcError(
             grpc.StatusCode.NOT_FOUND,
             "user not found",
             (("x-trailer", "unary"),),

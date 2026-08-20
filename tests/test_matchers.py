@@ -6,6 +6,7 @@ from grpcvcr.matchers import (
     MetadataMatcher,
     MethodMatcher,
     RequestMatcher,
+    TargetMatcher,
     find_matching_interaction,
 )
 from grpcvcr.serialization import (
@@ -19,9 +20,10 @@ def make_request(
     method: str = "/test/Method",
     body: bytes = b"body",
     metadata: dict[str, list[str]] | None = None,
+    target: str | None = None,
 ) -> InteractionRequest:
     """Helper to create InteractionRequest."""
-    req = InteractionRequest.from_grpc(method, body)
+    req = InteractionRequest.from_grpc(method, body, target=target)
     if metadata:
         req.metadata = metadata
     return req
@@ -39,6 +41,26 @@ class TestMethodMatcher:
         req1 = make_request(method="/test/Method1")
         req2 = make_request(method="/test/Method2")
         assert not matcher.matches(req1, req2)
+
+
+class TestTargetMatcher:
+    def test_matches_same_target(self) -> None:
+        matcher = TargetMatcher()
+        req1 = make_request(target="localhost:50051")
+        req2 = make_request(target="localhost:50051")
+        assert matcher.matches(req1, req2)
+
+    def test_not_matches_different_target(self) -> None:
+        matcher = TargetMatcher()
+        req1 = make_request(target="localhost:50051")
+        req2 = make_request(target="localhost:50052")
+        assert not matcher.matches(req1, req2)
+
+    def test_matches_when_both_targets_unset(self) -> None:
+        matcher = TargetMatcher()
+        req1 = make_request()
+        req2 = make_request()
+        assert matcher.matches(req1, req2)
 
 
 class TestRequestMatcher:

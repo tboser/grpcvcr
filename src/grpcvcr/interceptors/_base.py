@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import grpc
 
@@ -12,6 +12,23 @@ from grpcvcr.serialization import (
     InteractionResponse,
     StreamingInteractionResponse,
 )
+
+if TYPE_CHECKING:
+    from grpcvcr.cassette import Cassette
+
+
+class RecordingInterceptorBase:
+    """Shared state for recording/playback interceptors.
+
+    Holds the cassette the interaction is recorded to or replayed from, and the
+    gRPC target the owning channel is connected to. The target is per-channel,
+    not per-cassette: two channels may share one cassette while pointing at
+    different hosts.
+    """
+
+    def __init__(self, cassette: Cassette, target: str | None = None) -> None:
+        self.cassette = cassette
+        self.target = target
 
 
 def create_unary_response(

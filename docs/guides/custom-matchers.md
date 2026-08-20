@@ -44,6 +44,9 @@ def my_matcher(request, recorded_request):
     # Metadata as dict[str, list[str]]
     request.metadata
 
+    # gRPC server address this request was recorded against (or None)
+    request.target
+
     return True  # or False
 ```
 

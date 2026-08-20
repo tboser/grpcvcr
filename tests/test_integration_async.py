@@ -12,6 +12,7 @@ from grpcvcr import (
     MethodMatcher,
     RecordMode,
     RequestMatcher,
+    TargetMatcher,
     async_recorded_channel,
 )
 from grpcvcr.errors import RecordingDisabledError
@@ -41,6 +42,7 @@ class TestAsyncUnaryRecordingPlayback:
         assert grpc_servicer.call_count == 1
         assert tmp_cassette_path.exists()
         assert len(cassette.interactions) == 1
+        assert cassette.interactions[0].request.target == grpc_target
 
     async def test_playback_unary_call(
         self,
@@ -60,6 +62,7 @@ class TestAsyncUnaryRecordingPlayback:
 
         grpc_servicer.call_count = 0
         cassette2 = Cassette(tmp_cassette_path, record_mode=RecordMode.NONE)
+        assert cassette2.interactions[0].request.target == grpc_target
         async with AsyncRecordingChannel(cassette2, grpc_target) as recording:
             stub = pb2_grpc.TestServiceStub(recording.channel)
             response = await stub.GetUser(pb2.GetUserRequest(id=42))
@@ -314,3 +317,28 @@ class TestAsyncBidiStreaming:
 
         assert len(responses) == 2
         assert grpc_servicer.call_count == 0
+
+
+@pytest.mark.asyncio
+class TestAsyncMultiHostCassettes:
+    """One cassette shared by async channels pointing at different hosts."""
+
+    async def test_each_interaction_records_its_own_target(
+        self,
+        grpc_target: str,
+        second_grpc_target: str,
+        tmp_cassette_path: Path,
+        pb2,
+        pb2_grpc,
+    ) -> None:
+        """Interactions are tagged with the host they were recorded against, not the first one seen."""
+        cassette = Cassette(
+            tmp_cassette_path,
+            record_mode=RecordMode.NEW_EPISODES,
+            match_on=MethodMatcher() & TargetMatcher(),
+        )
+        async with AsyncRecordingChannel(cassette, grpc_target) as recording:
+            await pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=42))
+        async with AsyncRecordingChannel(cassette, second_grpc_target) as recording:
+            await pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=42))
+        assert [i.request.target for i in cassette.interactions] == [grpc_target, second_grpc_target]

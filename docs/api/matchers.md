@@ -20,6 +20,7 @@ matcher = MethodMatcher() & RequestMatcher()
 | [`MethodMatcher`][grpcvcr.MethodMatcher] | Match by RPC method name |
 | [`RequestMatcher`][grpcvcr.RequestMatcher] | Match by request body |
 | [`MetadataMatcher`][grpcvcr.MetadataMatcher] | Match by request metadata |
+| [`TargetMatcher`][grpcvcr.TargetMatcher] | Match by gRPC server address |
 | [`AllMatcher`][grpcvcr.AllMatcher] | Combine multiple matchers |
 | [`CustomMatcher`][grpcvcr.CustomMatcher] | Custom matching function |
 
@@ -36,6 +37,8 @@ matcher = MethodMatcher() & RequestMatcher()
 ::: grpcvcr.RequestMatcher
 
 ::: grpcvcr.MetadataMatcher
+
+::: grpcvcr.TargetMatcher
 
 ::: grpcvcr.AllMatcher
 

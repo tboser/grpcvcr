@@ -136,6 +136,21 @@ def grpc_target(grpc_test_server: GrpcTestServer) -> str:
     return f"localhost:{grpc_test_server.port}"
 
 
+@pytest.fixture(scope="session")
+def second_grpc_test_server() -> Generator[GrpcTestServer, None, None]:
+    """A second gRPC test server, for exercising multi-host cassettes."""
+    server = GrpcTestServer()
+    server.start()
+    yield server
+    server.stop()
+
+
+@pytest.fixture
+def second_grpc_target(second_grpc_test_server: GrpcTestServer) -> str:
+    """Get the second gRPC server target address."""
+    return f"localhost:{second_grpc_test_server.port}"
+
+
 @pytest.fixture
 def grpc_servicer(grpc_test_server: GrpcTestServer) -> TestServiceServicer:
     """Get the test servicer instance."""

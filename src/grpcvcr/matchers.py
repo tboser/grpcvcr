@@ -84,6 +84,34 @@ class MethodMatcher(Matcher):
 
 
 @dataclass
+class TargetMatcher(Matcher):
+    """Matches requests by gRPC target (host:port).
+
+    Useful when a cassette contains interactions recorded against multiple
+    hosts (e.g. different providers) and playback should only match an
+    interaction recorded against the same target.
+
+    Interactions recorded before the `target` field existed have no target and
+    only match requests made through a channel with no target of its own, so
+    re-record those cassettes before adopting this matcher.
+
+    Example:
+        ```python
+        # Match by method AND target host
+        matcher = MethodMatcher() & TargetMatcher()
+        ```
+    """
+
+    def matches(
+        self,
+        request: InteractionRequest,
+        recorded: InteractionRequest,
+    ) -> bool:
+        """Check if targets match exactly."""
+        return request.target == recorded.target
+
+
+@dataclass
 class MetadataMatcher(Matcher):
     """Matches requests by metadata (headers).
 

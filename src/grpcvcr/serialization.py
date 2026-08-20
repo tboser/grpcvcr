@@ -87,12 +87,16 @@ class InteractionRequest:
     metadata: dict[str, list[str]] = field(default_factory=dict)
     """Request metadata as a dict mapping header names to lists of values."""
 
+    target: str | None = None
+    """The gRPC server address this request was recorded against."""
+
     @classmethod
     def from_grpc(
         cls,
         method: str,
         body: bytes,
         metadata: tuple[tuple[str, str], ...] | None = None,
+        target: str | None = None,
     ) -> InteractionRequest:
         """Create an InteractionRequest from gRPC call details.
 
@@ -100,6 +104,7 @@ class InteractionRequest:
             method: Full gRPC method path.
             body: Raw protobuf bytes.
             metadata: Optional request metadata as tuples of (key, value).
+            target: Optional gRPC server address this request was recorded against.
 
         Returns:
             A new InteractionRequest instance.
@@ -110,6 +115,7 @@ class InteractionRequest:
                 method="/test.TestService/GetUser",
                 body=get_user_request.SerializeToString(),
                 metadata=(("x-request-id", "123"),),
+                target="localhost:50051",
             )
             ```
         """
@@ -122,6 +128,7 @@ class InteractionRequest:
             method=method,
             body=base64.b64encode(body).decode("ascii"),
             metadata=meta_dict,
+            target=target,
         )
 
     def get_body_bytes(self) -> bytes:

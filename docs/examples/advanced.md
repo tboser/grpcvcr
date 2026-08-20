@@ -188,6 +188,21 @@ with recorded_channel(
         assert e.code() == grpc.StatusCode.NOT_FOUND
 ```
 
+Streaming calls behave the same way. Messages received before the failure are
+delivered, and the error is raised when the stream reaches the point where it
+failed:
+
+```python
+with recorded_channel("stream_error.yaml", target) as channel:
+    stub = MyServiceStub(channel)
+    received = []
+    try:
+        for user in stub.ListUsers(ListUsersRequest(limit=-1)):
+            received.append(user)
+    except grpc.RpcError as e:
+        assert e.code() == grpc.StatusCode.INVALID_ARGUMENT
+```
+
 ## Parallel Test Isolation
 
 ```python

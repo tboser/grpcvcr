@@ -9,7 +9,7 @@ import grpc
 from grpc import aio
 
 from grpcvcr.errors import RecordingDisabledError
-from grpcvcr.interceptors._base import RecordingInterceptorBase
+from grpcvcr.interceptors._base import RecordingInterceptorBase, normalize_method
 from grpcvcr.record_modes import RecordMode
 from grpcvcr.serialization import (
     Interaction,
@@ -158,7 +158,7 @@ class AsyncRecordingUnaryUnaryInterceptor(RecordingInterceptorBase, aio.UnaryUna
         client_call_details: aio.ClientCallDetails,
         request: Any,
     ) -> aio.Call:
-        method = client_call_details.method
+        method = normalize_method(client_call_details.method)
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
@@ -228,7 +228,7 @@ class AsyncRecordingUnaryStreamInterceptor(RecordingInterceptorBase, aio.UnarySt
         client_call_details: aio.ClientCallDetails,
         request: Any,
     ) -> aio.Call:
-        method = client_call_details.method
+        method = normalize_method(client_call_details.method)
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
@@ -312,7 +312,7 @@ class AsyncRecordingStreamUnaryInterceptor(RecordingInterceptorBase, aio.StreamU
         client_call_details: aio.ClientCallDetails,
         request_iterator: Any,
     ) -> aio.Call:
-        method = client_call_details.method
+        method = normalize_method(client_call_details.method)
         metadata = client_call_details.metadata
 
         requests = [r async for r in request_iterator]
@@ -392,7 +392,7 @@ class AsyncRecordingStreamStreamInterceptor(RecordingInterceptorBase, aio.Stream
         client_call_details: aio.ClientCallDetails,
         request_iterator: Any,
     ) -> aio.Call:
-        method = client_call_details.method
+        method = normalize_method(client_call_details.method)
         metadata = client_call_details.metadata
 
         requests = [r async for r in request_iterator]

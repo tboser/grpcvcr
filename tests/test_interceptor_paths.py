@@ -47,12 +47,11 @@ class TestFailedRpcRecording:
                 stub.GetUser(pb2.GetUserRequest(id=FAIL_ID))
 
     def test_server_streaming_error(self, grpc_target: str, tmp_cassette_path: Path, pb2, pb2_grpc) -> None:
-        # A streaming RPC that fails is recorded with its status code, but the
-        # error is not re-raised to the caller: the stream just ends early.
         cassette = Cassette(tmp_cassette_path, record_mode=RecordMode.NEW_EPISODES)
         with RecordingChannel(cassette, grpc_target) as recording:
             stub = pb2_grpc.TestServiceStub(recording.channel)
-            assert list(stub.ListUsers(pb2.ListUsersRequest(limit=FAIL_ID))) == []
+            with pytest.raises(grpc.RpcError):
+                list(stub.ListUsers(pb2.ListUsersRequest(limit=FAIL_ID)))
 
         assert cassette.interactions[0].response.code == "INVALID_ARGUMENT"
         assert cassette.interactions[0].response.details == "limit must be positive"
@@ -70,7 +69,8 @@ class TestFailedRpcRecording:
         cassette = Cassette(tmp_cassette_path, record_mode=RecordMode.NEW_EPISODES)
         with RecordingChannel(cassette, grpc_target) as recording:
             stub = pb2_grpc.TestServiceStub(recording.channel)
-            assert list(stub.Chat(chat_messages(pb2, FAIL_NAME))) == []
+            with pytest.raises(grpc.RpcError):
+                list(stub.Chat(chat_messages(pb2, FAIL_NAME)))
 
         assert cassette.interactions[0].response.code == "INVALID_ARGUMENT"
 

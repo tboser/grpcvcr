@@ -95,15 +95,6 @@ def _dict_to_metadata(d: dict[str, list[str]]) -> tuple[tuple[str, str], ...]:
     return tuple(result)
 
 
-def _metadata_to_dict(metadata: tuple[tuple[str, str], ...] | None) -> dict[str, list[str]]:
-    """Convert gRPC metadata tuple to dict format for storage."""
-    result: dict[str, list[str]] = {}
-    if metadata:
-        for key, value in metadata:
-            result.setdefault(key, []).append(value)
-    return result
-
-
 class _FakeUnaryCall(grpc.Call, grpc.Future):  # type: ignore[misc]
     """Fake call object for playback of unary responses.
 

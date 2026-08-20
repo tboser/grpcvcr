@@ -15,6 +15,13 @@ if TYPE_CHECKING:
     from tests.generated import test_service_pb2
 
 
+FAIL_ID = -1
+"""Request id that makes the test servicer abort, for exercising error recording."""
+
+FAIL_NAME = "fail"
+"""Streaming payload that makes the test servicer abort mid-stream."""
+
+
 def _import_generated() -> tuple:
     """Import generated proto modules."""
     from tests.generated import test_service_pb2, test_service_pb2_grpc
@@ -35,6 +42,9 @@ class TestServiceServicer:
         context: grpc.ServicerContext,
     ) -> test_service_pb2.GetUserResponse:
         self.call_count += 1
+        if request.id == FAIL_ID:
+            context.abort(grpc.StatusCode.NOT_FOUND, "user not found")
+        context.set_trailing_metadata((("x-trailer", "unary"),))
         user = self.pb2.User(
             id=request.id,
             name=f"User {request.id}",
@@ -48,6 +58,9 @@ class TestServiceServicer:
         context: grpc.ServicerContext,
     ) -> Iterator[test_service_pb2.User]:
         self.call_count += 1
+        if request.limit == FAIL_ID:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "limit must be positive")
+        context.set_trailing_metadata((("x-trailer", "server-stream"),))
         for i in range(request.limit):
             yield self.pb2.User(
                 id=i + 1,
@@ -62,7 +75,9 @@ class TestServiceServicer:
     ) -> test_service_pb2.CreateUsersResponse:
         self.call_count += 1
         ids = []
-        for i, _req in enumerate(request_iterator):
+        for i, req in enumerate(request_iterator):
+            if req.name == FAIL_NAME:
+                context.abort(grpc.StatusCode.INVALID_ARGUMENT, "invalid user")
             ids.append(i + 1)
         return self.pb2.CreateUsersResponse(created_count=len(ids), ids=ids)
 
@@ -73,6 +88,8 @@ class TestServiceServicer:
     ) -> Iterator[test_service_pb2.ChatMessage]:
         self.call_count += 1
         for msg in request_iterator:
+            if msg.content == FAIL_NAME:
+                context.abort(grpc.StatusCode.INVALID_ARGUMENT, "bad message")
             yield self.pb2.ChatMessage(
                 sender="server",
                 content=f"Echo: {msg.content}",

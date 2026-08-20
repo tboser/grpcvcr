@@ -13,6 +13,7 @@ import grpc
 import pytest
 
 from grpcvcr import AsyncRecordingChannel, Cassette, RecordingChannel, RecordMode
+from grpcvcr.interceptors._base import ReplayedRpcError
 from tests.conftest import FAIL_ID, FAIL_NAME
 from tests.test_interceptor_paths import chat_messages
 from tests.test_interceptor_paths_async import chat_messages as async_chat_messages
@@ -131,3 +132,43 @@ class TestAsyncStreamingErrorsPropagate:
                 [m async for m in stub.Chat(async_chat_messages(pb2, FAIL_NAME))]
 
         assert status_of(excinfo) == (grpc.StatusCode.INVALID_ARGUMENT, "bad message")
+
+
+class TestReplayedRpcError:
+    """The error object a replayed failure raises, which gRPC treats as the call."""
+
+    def error(self) -> ReplayedRpcError:
+        return ReplayedRpcError(
+            grpc.StatusCode.NOT_FOUND,
+            "user not found",
+            (("x-trailer", "unary"),),
+        )
+
+    def test_is_both_an_error_and_a_call(self) -> None:
+        error = self.error()
+
+        assert isinstance(error, grpc.RpcError)
+        assert isinstance(error, grpc.Call)
+
+    def test_reports_its_status(self) -> None:
+        error = self.error()
+
+        assert error.code() == grpc.StatusCode.NOT_FOUND
+        assert error.details() == "user not found"
+        assert str(error) == "NOT_FOUND: user not found"
+
+    def test_exposes_call_metadata(self) -> None:
+        error = self.error()
+
+        assert dict(error.trailing_metadata())["x-trailer"] == "unary"
+        assert error.initial_metadata() == ()
+
+    def test_is_an_already_finished_call(self) -> None:
+        error = self.error()
+        notified: list[object] = []
+
+        assert error.is_active() is False
+        assert error.time_remaining() is None
+        assert error.cancel() is False
+        assert error.add_callback(notified.append) is True
+        assert notified == [error]

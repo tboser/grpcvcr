@@ -86,6 +86,63 @@ def create_streaming_response(
     )
 
 
+def normalize_method(method: str | bytes) -> str:
+    """Return the method path as text.
+
+    grpc.aio hands the method over as bytes where the sync API uses str. Cassettes
+    key interactions by this value, so it is normalized on the way in to keep the
+    two channel kinds interchangeable and the recorded file readable.
+    """
+    return method.decode("utf-8") if isinstance(method, bytes) else method
+
+
+class ReplayedRpcError(grpc.RpcError, grpc.Call):  # type: ignore[misc]
+    """The error a recorded failure is replayed as.
+
+    gRPC raises an object that is both the error and the call, so callers reach the
+    status through `code()` and `details()` on the exception itself.
+    """
+
+    def __init__(
+        self,
+        code: grpc.StatusCode,
+        details: str | None,
+        trailing_metadata: tuple[tuple[str, str], ...] = (),
+    ) -> None:
+        super().__init__()
+        self._code = code
+        self._details = details
+        self._trailing_metadata = trailing_metadata
+
+    def __str__(self) -> str:
+        return f"{self._code.name}: {self._details}"
+
+    def code(self) -> grpc.StatusCode:
+        return self._code
+
+    def details(self) -> str | None:
+        return self._details
+
+    def trailing_metadata(self) -> tuple[tuple[str, str], ...]:
+        return self._trailing_metadata
+
+    def initial_metadata(self) -> tuple[tuple[str, str], ...]:
+        return ()
+
+    def is_active(self) -> bool:
+        return False
+
+    def time_remaining(self) -> float | None:
+        return None
+
+    def cancel(self) -> bool:
+        return False
+
+    def add_callback(self, callback: Callable[[Any], None]) -> bool:
+        callback(self)
+        return True
+
+
 def _dict_to_metadata(d: dict[str, list[str]]) -> tuple[tuple[str, str], ...]:
     """Convert metadata dict back to gRPC tuple format."""
     result: list[tuple[str, str]] = []
@@ -117,7 +174,7 @@ class _FakeUnaryCall(grpc.Call, grpc.Future):  # type: ignore[misc]
 
     def result(self, timeout: float | None = None) -> object:
         if self._code != grpc.StatusCode.OK:
-            raise grpc.RpcError()
+            raise self._error()
         return self._result
 
     def code(self) -> grpc.StatusCode:
@@ -146,8 +203,11 @@ class _FakeUnaryCall(grpc.Call, grpc.Future):  # type: ignore[misc]
 
     def exception(self, timeout: float | None = None) -> Exception | None:
         if self._code != grpc.StatusCode.OK:
-            return grpc.RpcError()
+            return self._error()
         return None
+
+    def _error(self) -> ReplayedRpcError:
+        return ReplayedRpcError(self._code, self._details, self._trailing_metadata)
 
     def traceback(self, timeout: float | None = None) -> Any:
         return None
@@ -192,6 +252,8 @@ class _FakeStreamingCall(grpc.Call):  # type: ignore[misc]
 
     def __next__(self) -> object:
         if self._index >= len(self._messages):
+            if self._code != grpc.StatusCode.OK:
+                raise ReplayedRpcError(self._code, self._details, self._trailing_metadata)
             raise StopIteration
         msg = self._messages[self._index]
         self._index += 1

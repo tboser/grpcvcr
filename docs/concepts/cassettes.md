@@ -28,7 +28,14 @@ interactions:
     recorded_at: "2024-01-15T10:30:00Z"
 ```
 
-The `target` field records the gRPC server address (e.g. `localhost:50051`) the interaction was recorded against. It's set automatically from the `target` passed to `RecordingChannel`/`AsyncRecordingChannel`, and is useful when a project records interactions against multiple hosts (e.g. different providers) and needs to tell which one a given cassette entry came from. It's optional — cassettes recorded before this field existed simply omit it, and it has no effect on default request matching.
+The `target` field records the gRPC server address the interaction was recorded
+against. Each interaction is tagged with the target of the channel that recorded
+it, so one cassette can hold interactions from several hosts. Pair it with
+[`TargetMatcher`](matchers.md#targetmatcher) to keep those hosts apart during
+playback.
+
+The field is optional: cassettes recorded before it existed simply omit it, and
+it has no effect on the default matcher.
 
 ## Cassette Location
 

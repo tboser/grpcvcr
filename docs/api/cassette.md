@@ -30,7 +30,6 @@ with RecordingChannel(cassette, "localhost:50051") as recording:
         - record_interaction
         - interactions
         - record_mode
-        - target
         - can_record
 
 ::: grpcvcr.use_cassette

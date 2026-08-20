@@ -37,6 +37,21 @@ from grpcvcr import RequestMatcher
 matcher = RequestMatcher()
 ```
 
+### TargetMatcher
+
+Matches by the gRPC server address the interaction was recorded against.
+
+```python
+from grpcvcr import MethodMatcher, TargetMatcher
+
+# Keep two hosts' interactions apart in a single cassette
+matcher = MethodMatcher() & TargetMatcher()
+```
+
+Interactions recorded before the `target` field existed have no target, so they
+only match requests made through a channel with no target of its own. Re-record
+those cassettes before adopting this matcher.
+
 ### MetadataMatcher
 
 Matches by request metadata (headers).

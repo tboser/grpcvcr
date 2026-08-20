@@ -12,6 +12,7 @@ from grpcvcr import (
     RecordingChannel,
     RecordMode,
     RequestMatcher,
+    TargetMatcher,
     recorded_channel,
 )
 from grpcvcr.errors import RecordingDisabledError
@@ -40,24 +41,7 @@ class TestUnaryRecordingPlayback:
         assert grpc_servicer.call_count == 1
         assert tmp_cassette_path.exists()
         assert len(cassette.interactions) == 1
-        assert cassette.target == grpc_target
         assert cassette.interactions[0].request.target == grpc_target
-
-    def test_preseeded_cassette_target_takes_precedence(
-        self,
-        grpc_target: str,
-        tmp_cassette_path: Path,
-        grpc_servicer,
-        pb2,
-        pb2_grpc,
-    ) -> None:
-        """An explicitly pre-seeded cassette target is not overwritten by the channel's target."""
-        cassette = Cassette(tmp_cassette_path, record_mode=RecordMode.ALL, target="preseeded-target")
-        with RecordingChannel(cassette, grpc_target) as recording:
-            stub = pb2_grpc.TestServiceStub(recording.channel)
-            stub.GetUser(pb2.GetUserRequest(id=42))
-
-        assert cassette.target == "preseeded-target"
 
     def test_playback_unary_call(
         self,
@@ -353,3 +337,50 @@ class TestBidiStreaming:
 
         assert len(responses) == 2
         assert grpc_servicer.call_count == 0
+
+
+class TestMultiHostCassettes:
+    """One cassette shared by channels pointing at different hosts."""
+
+    def test_each_interaction_records_its_own_target(
+        self,
+        grpc_target: str,
+        second_grpc_target: str,
+        tmp_cassette_path: Path,
+        pb2,
+        pb2_grpc,
+    ) -> None:
+        """Interactions are tagged with the host they were recorded against, not the first one seen."""
+        cassette = Cassette(
+            tmp_cassette_path,
+            record_mode=RecordMode.NEW_EPISODES,
+            match_on=MethodMatcher() & TargetMatcher(),
+        )
+        with RecordingChannel(cassette, grpc_target) as recording:
+            pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=42))
+        with RecordingChannel(cassette, second_grpc_target) as recording:
+            pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=42))
+        assert [i.request.target for i in cassette.interactions] == [grpc_target, second_grpc_target]
+
+    def test_target_matcher_selects_the_matching_host(
+        self,
+        grpc_target: str,
+        second_grpc_target: str,
+        tmp_cassette_path: Path,
+        pb2,
+        pb2_grpc,
+    ) -> None:
+        """Playback against one host replays that host's interaction, not the other's."""
+        match_on = MethodMatcher() & TargetMatcher()
+        cassette = Cassette(tmp_cassette_path, record_mode=RecordMode.NEW_EPISODES, match_on=match_on)
+        with RecordingChannel(cassette, grpc_target) as recording:
+            pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=1))
+        with RecordingChannel(cassette, second_grpc_target) as recording:
+            pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=2))
+        cassette.save()
+
+        playback = Cassette(tmp_cassette_path, record_mode=RecordMode.NONE, match_on=match_on)
+        with RecordingChannel(playback, second_grpc_target) as recording:
+            response = pb2_grpc.TestServiceStub(recording.channel).GetUser(pb2.GetUserRequest(id=2))
+
+        assert response.user.id == 2

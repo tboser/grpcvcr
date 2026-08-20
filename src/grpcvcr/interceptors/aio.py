@@ -9,6 +9,7 @@ import grpc
 from grpc import aio
 
 from grpcvcr.errors import RecordingDisabledError
+from grpcvcr.interceptors._base import RecordingInterceptorBase
 from grpcvcr.record_modes import RecordMode
 from grpcvcr.serialization import (
     Interaction,
@@ -148,11 +149,8 @@ class _AsyncFakeStreamingCall(aio.Call):  # type: ignore[misc]
         pass
 
 
-class AsyncRecordingUnaryUnaryInterceptor(aio.UnaryUnaryClientInterceptor):  # type: ignore[misc]
+class AsyncRecordingUnaryUnaryInterceptor(RecordingInterceptorBase, aio.UnaryUnaryClientInterceptor):  # type: ignore[misc]
     """Async interceptor for unary-unary RPCs (single request, single response)."""
-
-    def __init__(self, cassette: Cassette) -> None:
-        self.cassette = cassette
 
     async def intercept_unary_unary(
         self,
@@ -164,7 +162,7 @@ class AsyncRecordingUnaryUnaryInterceptor(aio.UnaryUnaryClientInterceptor):  # t
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -221,11 +219,8 @@ class AsyncRecordingUnaryUnaryInterceptor(aio.UnaryUnaryClientInterceptor):  # t
         return call
 
 
-class AsyncRecordingUnaryStreamInterceptor(aio.UnaryStreamClientInterceptor):  # type: ignore[misc]
+class AsyncRecordingUnaryStreamInterceptor(RecordingInterceptorBase, aio.UnaryStreamClientInterceptor):  # type: ignore[misc]
     """Async interceptor for server-streaming RPCs (single request, streaming response)."""
-
-    def __init__(self, cassette: Cassette) -> None:
-        self.cassette = cassette
 
     async def intercept_unary_stream(
         self,
@@ -237,7 +232,7 @@ class AsyncRecordingUnaryStreamInterceptor(aio.UnaryStreamClientInterceptor):  #
         request_bytes = request.SerializeToString()
         metadata = client_call_details.metadata
 
-        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.cassette.target)
+        req = InteractionRequest.from_grpc(method, request_bytes, metadata, self.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -306,11 +301,8 @@ class AsyncRecordingUnaryStreamInterceptor(aio.UnaryStreamClientInterceptor):  #
         )
 
 
-class AsyncRecordingStreamUnaryInterceptor(aio.StreamUnaryClientInterceptor):  # type: ignore[misc]
+class AsyncRecordingStreamUnaryInterceptor(RecordingInterceptorBase, aio.StreamUnaryClientInterceptor):  # type: ignore[misc]
     """Async interceptor for client-streaming RPCs (streaming request, single response)."""
-
-    def __init__(self, cassette: Cassette) -> None:
-        self.cassette = cassette
 
     async def intercept_stream_unary(
         self,
@@ -324,7 +316,7 @@ class AsyncRecordingStreamUnaryInterceptor(aio.StreamUnaryClientInterceptor):  #
         requests = [r async for r in request_iterator]
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -389,11 +381,8 @@ class AsyncRecordingStreamUnaryInterceptor(aio.StreamUnaryClientInterceptor):  #
         return call
 
 
-class AsyncRecordingStreamStreamInterceptor(aio.StreamStreamClientInterceptor):  # type: ignore[misc]
+class AsyncRecordingStreamStreamInterceptor(RecordingInterceptorBase, aio.StreamStreamClientInterceptor):  # type: ignore[misc]
     """Async interceptor for bidirectional streaming RPCs."""
-
-    def __init__(self, cassette: Cassette) -> None:
-        self.cassette = cassette
 
     async def intercept_stream_stream(
         self,
@@ -407,7 +396,7 @@ class AsyncRecordingStreamStreamInterceptor(aio.StreamStreamClientInterceptor): 
         requests = [r async for r in request_iterator]
         combined_request = b"".join(r.SerializeToString() for r in requests)
 
-        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.cassette.target)
+        req = InteractionRequest.from_grpc(method, combined_request, metadata, self.target)
 
         if self.cassette.record_mode != RecordMode.ALL:
             interaction = self.cassette.find_interaction(req)
@@ -489,18 +478,19 @@ class AsyncRecordingStreamStreamInterceptor(aio.StreamStreamClientInterceptor): 
         )
 
 
-def create_async_interceptors(cassette: Cassette) -> list[aio.ClientInterceptor]:
+def create_async_interceptors(cassette: Cassette, target: str | None = None) -> list[aio.ClientInterceptor]:
     """Create all async interceptors for a cassette.
 
     Args:
         cassette: The cassette to use for recording/playback.
+        target: The gRPC server address the channel is connected to.
 
     Returns:
         List of async interceptors covering all RPC types.
     """
     return [
-        AsyncRecordingUnaryUnaryInterceptor(cassette),
-        AsyncRecordingUnaryStreamInterceptor(cassette),
-        AsyncRecordingStreamUnaryInterceptor(cassette),
-        AsyncRecordingStreamStreamInterceptor(cassette),
+        AsyncRecordingUnaryUnaryInterceptor(cassette, target),
+        AsyncRecordingUnaryStreamInterceptor(cassette, target),
+        AsyncRecordingStreamUnaryInterceptor(cassette, target),
+        AsyncRecordingStreamStreamInterceptor(cassette, target),
     ]

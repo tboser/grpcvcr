@@ -56,10 +56,7 @@ class RecordingChannel:
         self.target = target
         """The gRPC server address."""
 
-        if not self.cassette.target:
-            self.cassette.target = target
-
-        interceptors = create_interceptors(cassette)
+        interceptors = create_interceptors(cassette, target)
 
         if credentials:
             base_channel = grpc.secure_channel(target, credentials, options=options or [])
@@ -121,10 +118,7 @@ class AsyncRecordingChannel:
         self.target = target
         """The gRPC server address."""
 
-        if not self.cassette.target:
-            self.cassette.target = target
-
-        interceptors = create_async_interceptors(cassette)
+        interceptors = create_async_interceptors(cassette, target)
 
         if credentials:
             self.channel = aio.secure_channel(target, credentials, options=options or [], interceptors=interceptors)

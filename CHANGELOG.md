@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for all RPC types: unary, server streaming, client streaming, bidirectional streaming
 - Async support with `AsyncRecordingChannel` for `grpc.aio`
 - YAML and JSON cassette formats
-- Flexible request matching with `MethodMatcher`, `RequestMatcher`, `MetadataMatcher`, and `CustomMatcher`
+- Flexible request matching with `MethodMatcher`, `RequestMatcher`, `MetadataMatcher`, `TargetMatcher`, and `CustomMatcher`
+- `target` recorded on each interaction, capturing the gRPC server address it was recorded against
 - Matcher composition with `&` operator
 - Four record modes: `NONE`, `NEW_EPISODES`, `ALL`, `ONCE`
 - pytest plugin with automatic cassette management

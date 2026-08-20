@@ -58,11 +58,6 @@ class Cassette:
     match_on: Matcher = field(default_factory=lambda: DEFAULT_MATCHER)
     """Matcher(s) to use for finding recorded interactions."""
 
-    target: str | None = None
-    """The gRPC target (host:port) this cassette's interactions are recorded against.
-    Set automatically by RecordingChannel/AsyncRecordingChannel; can also be passed
-    explicitly for advanced use (e.g. raw interceptor usage without a channel wrapper)."""
-
     _data: CassetteData = field(default_factory=CassetteData, init=False)
     _dirty: bool = field(default=False, init=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, init=False)
@@ -135,7 +130,6 @@ class Cassette:
         method: str,
         request_body: bytes,
         metadata: tuple[tuple[str, str], ...] | None = None,
-        target: str | None = None,
     ) -> Interaction:
         """Get the recorded response for a request.
 
@@ -143,7 +137,6 @@ class Cassette:
             method: Full gRPC method path.
             request_body: Serialized protobuf request.
             metadata: Optional request metadata (headers).
-            target: Optional target this interaction is recorded against.
 
         Returns:
             The matching recorded interaction.
@@ -154,7 +147,7 @@ class Cassette:
             RecordingDisabledError: If no matching interaction is found
                 and recording is disabled.
         """
-        request = InteractionRequest.from_grpc(method, request_body, metadata, target)
+        request = InteractionRequest.from_grpc(method, request_body, metadata)
         interaction = self.find_interaction(request)
 
         if interaction is None:

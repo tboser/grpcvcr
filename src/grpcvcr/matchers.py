@@ -91,6 +91,10 @@ class TargetMatcher(Matcher):
     hosts (e.g. different providers) and playback should only match an
     interaction recorded against the same target.
 
+    Interactions recorded before the `target` field existed have no target and
+    only match requests made through a channel with no target of its own, so
+    re-record those cassettes before adopting this matcher.
+
     Example:
         ```python
         # Match by method AND target host

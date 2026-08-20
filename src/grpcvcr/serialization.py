@@ -115,7 +115,7 @@ class InteractionRequest:
                 method="/test.TestService/GetUser",
                 body=get_user_request.SerializeToString(),
                 metadata=(("x-request-id", "123"),),
-                target="grpc-server.io",
+                target="localhost:50051",
             )
             ```
         """

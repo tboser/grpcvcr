@@ -262,7 +262,9 @@ class AsyncRecordingUnaryStreamInterceptor(RecordingInterceptorBase, aio.UnarySt
         details = None
 
         try:
-            async for msg in call:
+            # coverage does not record the exit arc of an `async for` that finishes
+            # inside a `try`, so its normal-completion branch reads as unvisited.
+            async for msg in call:  # pragma: no branch
                 messages_bytes.append(msg.SerializeToString())
                 if response_type is None:
                     response_type = type(msg)
@@ -434,7 +436,9 @@ class AsyncRecordingStreamStreamInterceptor(RecordingInterceptorBase, aio.Stream
         details = None
 
         try:
-            async for msg in call:
+            # coverage does not record the exit arc of an `async for` that finishes
+            # inside a `try`, so its normal-completion branch reads as unvisited.
+            async for msg in call:  # pragma: no branch
                 messages_bytes.append(msg.SerializeToString())
                 if response_type is None:
                     response_type = type(msg)
